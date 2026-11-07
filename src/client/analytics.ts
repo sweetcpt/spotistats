@@ -105,10 +105,15 @@ function shouldDropEvent(event: {
  * racing it.
  */
 function analytics(): Promise<PostHogClient> | undefined {
-  if (typeof window === "undefined" || import.meta.env.DEV) return undefined;
+  const projectKey = import.meta.env.VITE_POSTHOG_KEY;
+  if (
+    typeof window === "undefined" ||
+    import.meta.env.DEV ||
+    !projectKey
+  ) return undefined;
   client ??= import("posthog-js").then(({ default: posthog }) => {
-    posthog.init("phc_qSpwCaUTRLVqXQYGL8zE5RMfm98NUQFiFJdMYymxLSWh", {
-      api_host: "/ph_ed90f8",
+    posthog.init(projectKey, {
+      api_host: "/ph",
       ui_host: "https://us.posthog.com",
       defaults: "2025-05-24",
       person_profiles: "identified_only",

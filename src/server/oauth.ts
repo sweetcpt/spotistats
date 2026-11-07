@@ -124,8 +124,7 @@ const resumedParam = "resumed";
  * Starts the listening-stats OAuth flow.
  *
  * Redirect through the canonical origin before handing the browser to Spotify,
- * so the registered redirect URI is always the host the worker answers as. The
- * legacy `spotistats.js.org` alias redirects to this host at the edge, and
+ * so the registered redirect URI is always the host the worker answers as.
  * `localhost` becomes `127.0.0.1` for the development redirect URI. The state
  * itself is signed rather than host-scoped, so this hop is only about the
  * redirect URI.

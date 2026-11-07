@@ -180,6 +180,8 @@ export class UpstreamError extends Schema.TaggedError<UpstreamError>()(
     message: Schema.String,
     /** The HTTP status the upstream returned, when there was one. */
     status: Schema.NullOr(Schema.Number),
+    /** A parsed upstream Retry-After delay, when the response supplied one. */
+    retryAfterSeconds: Schema.optional(Schema.Number),
   },
 ) {}
 

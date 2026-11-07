@@ -37,12 +37,12 @@ describe("public route helpers", () => {
 
 describe("canonical URL", () => {
   it("names the canonical host whatever host the browser is on", () => {
-    expect(canonicalUrl("/")).toBe("https://spotistats.otbeaumont.me/");
+    expect(canonicalUrl("/")).toBe("https://spotistats.example/");
     expect(canonicalUrl("/account")).toBe(
-      "https://spotistats.otbeaumont.me/account",
+      "https://spotistats.example/account",
     );
     expect(canonicalUrl("/login", "?start=1")).toBe(
-      "https://spotistats.otbeaumont.me/login?start=1",
+      "https://spotistats.example/login?start=1",
     );
   });
 });

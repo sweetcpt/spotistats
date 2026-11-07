@@ -11,7 +11,7 @@ import { isPostHogPath, proxyPostHog } from "./posthog";
  * Routes handled here, in order:
  * - `/account/stats/login` and `/account/stats/callback` — the stats OAuth flow.
  * - `/api/*` — the Effect `HttpApi`.
- * - `/ph_ed90f8/*` — the PostHog proxy.
+ * - `/ph/*` — the optional PostHog proxy, disabled without an owner-supplied key.
  *
  * Every other request falls through to the page render. Keep this list in
  * step with the routes the app expects the server to own.

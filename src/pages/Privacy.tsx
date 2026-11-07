@@ -4,8 +4,8 @@ import { LegalLayout } from "~/components/LegalLayout";
  * The privacy policy.
  *
  * It is a public, indexable route, so it lives outside the authenticated app
- * shell. Keep the copy in step with what `src/server/tracking.ts` actually
- * stores and what `src/client/analytics.ts` reports.
+ * shell. Keep the copy in step with what `src/server/tracking.ts` stores.
+ * Analytics are disabled unless the instance owner configures a PostHog project.
  */
 export default function PrivacyPage() {
   return (
@@ -46,9 +46,9 @@ export default function PrivacyPage() {
             server.
           </li>
           <li>
-            <strong>Product analytics.</strong> We record anonymous usage events
-            (such as which buttons are pressed) and error reports with PostHog.
-            Playlist names and track names are not sent.
+            <strong>Product analytics.</strong> This deployment does not have an
+            analytics project configured and sends no product events or error
+            reports to PostHog.
           </li>
         </ul>
       </section>
@@ -61,7 +61,9 @@ export default function PrivacyPage() {
           Your Spotify access token lives in your browser's{" "}
           <code>localStorage</code> and is sent with your Spotify requests.
           Listening history that you opt into is stored server-side in
-          Cloudflare D1, alongside the refresh token needed to sync it.
+          Cloudflare D1. The refresh token needed for sync is encrypted with
+          AES-GCM before it is written to D1; its encryption key is a separate
+          Cloudflare Worker secret.
         </p>
       </section>
 
@@ -97,9 +99,9 @@ export default function PrivacyPage() {
           How long we keep it
         </h2>
         <p>
-          Listening stats are kept while you have them enabled. Sync pauses
-          automatically after six months without opening the dashboard. You can
-          turn sync off or delete every stored listen from your{" "}
+          Listening data stays stored until you delete it. Sync pauses when you
+          turn it off and automatically after six months without opening the
+          dashboard. You can delete every stored listen and token from your{" "}
           <a href="/account" class="font-bold underline">
             account page
           </a>
@@ -121,8 +123,10 @@ export default function PrivacyPage() {
             listening history in D1, with queues and cron for the sync.
           </li>
           <li>
-            <strong>PostHog</strong> receives the product events and error
-            reports described above, through a first-party proxy.
+            PostHog is not configured for this deployment. If the instance
+            owner later supplies a PostHog project key, product events and
+            error reports will be sent to that project through a first-party
+            proxy.
           </li>
         </ul>
       </section>
@@ -145,7 +149,7 @@ export default function PrivacyPage() {
         <p>
           Questions about this policy, or a data request? Open an issue on{" "}
           <a
-            href="https://github.com/oscartbeaumont/spotistats/issues"
+            href="https://github.com/sweetcpt/spotistats/issues"
             target="_blank"
             rel="noopener noreferrer"
             class="font-bold underline"

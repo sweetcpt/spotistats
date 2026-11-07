@@ -64,6 +64,27 @@ it("leaves a persisted transient failure to the cron retry schedule", async () =
   expect(service.recordSyncFailure).toHaveBeenCalledWith("failed", "spotify: Unavailable", null);
 });
 
+it("honors Spotify's Retry-After delay when recording a rate limit", async () => {
+  service.sync.mockReturnValue(
+    Effect.fail(
+      new UpstreamError({
+        service: "spotify",
+        message: "Spotify rate limited the request (retry after 300s)",
+        status: 429,
+        retryAfterSeconds: 300,
+      }),
+    ),
+  );
+  service.recordSyncFailure.mockReturnValue(Effect.void);
+  const message = await queue("rate-limited");
+  expect(service.recordSyncFailure).toHaveBeenCalledWith(
+    "rate-limited",
+    "spotify: Spotify rate limited the request (retry after 300s)",
+    300,
+  );
+  expect(message.retry).not.toHaveBeenCalled();
+});
+
 it("asks for a reconnect when Spotify expires the stored authorization", async () => {
   service.sync.mockReturnValue(
     Effect.fail(

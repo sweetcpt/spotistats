@@ -76,6 +76,18 @@ export class SpotifyAuthRejected extends Schema.TaggedError<SpotifyAuthRejected>
   { message: Schema.String, status: Schema.Number },
 ) {}
 
+/** Retry-After accepts either seconds or an HTTP date. Keep unreasonable values
+ * bounded so a malformed response cannot park an account indefinitely. */
+export const retryAfterSeconds = (value: string | null, now = Date.now()) => {
+  if (value === null || value.trim() === "") return 60;
+  const seconds = Number(value);
+  const parsed = Number.isFinite(seconds)
+    ? Math.ceil(seconds)
+    : Math.ceil((Date.parse(value) - now) / 1000);
+  if (!Number.isFinite(parsed)) return 60;
+  return Math.min(7 * 24 * 60 * 60, Math.max(1, parsed));
+};
+
 const basicAuth = () =>
   btoa(`${env.VITE_SPOTIFY_CLIENT_ID}:${env.SPOTIFY_CLIENT_SECRET}`);
 
@@ -182,12 +194,13 @@ const apiRequest = <S extends Schema.ConstraintDecoder<unknown>>(
     }
 
     if (response.status === 429) {
-      const retryAfter = Number(response.headers.get("Retry-After") ?? "60");
+      const retryAfter = retryAfterSeconds(response.headers.get("Retry-After"));
       return yield* Effect.fail(
         new UpstreamError({
           service: "spotify",
           message: `Spotify rate limited the request (retry after ${retryAfter}s)`,
           status: 429,
+          retryAfterSeconds: retryAfter,
         }),
       );
     }

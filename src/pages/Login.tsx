@@ -149,7 +149,7 @@ export default function LoginPage() {
         <span class="hidden text-[0.65rem] uppercase tracking-[0.2em] text-[#5c5c5c] sm:block">
           Created by{" "}
           <a
-            href="https://otbeaumont.me"
+            href="https://github.com/oscartbeaumont/spotistats"
             target="_blank"
             rel="noopener noreferrer"
             class="underline-offset-2 hover:underline"

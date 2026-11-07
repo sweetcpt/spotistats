@@ -86,7 +86,9 @@ export default {
                     : tracking.recordSyncFailure(
                         id,
                         `${error.service}: ${error.message}`,
-                        error.status === 429 ? 60 : null,
+                        error.status === 429
+                          ? error.retryAfterSeconds ?? 60
+                          : null,
                       ),
               }),
               // A failure while recording the failure must not abort the batch

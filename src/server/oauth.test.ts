@@ -21,10 +21,10 @@ afterEach(() => {
 });
 
 it("bounces to the canonical origin before it starts the handshake", async () => {
-  const response = await login("https://spotistats.otbeaumont.me/account/stats/login");
+  const response = await login("https://spotistats.example/account/stats/login");
   expect(response.status).toBe(302);
   expect(locationOf(response)).toBe(
-    "https://spotistats.otbeaumont.me/account/stats/login?resumed=1",
+    "https://spotistats.example/account/stats/login?resumed=1",
   );
   expect(response.headers.get("Set-Cookie")).toBeNull();
 });
@@ -38,12 +38,12 @@ it("normalises localhost to the registered development host", async () => {
 
 it("sends the user to Spotify with a signed state and no cookie", async () => {
   const response = await login(
-    "https://spotistats.otbeaumont.me/account/stats/login?resumed=1",
+    "https://spotistats.example/account/stats/login?resumed=1",
   );
   const location = locationOf(response);
   expect(location.startsWith("https://accounts.spotify.com/authorize?")).toBe(true);
   expect(new URL(location).searchParams.get("redirect_uri")).toBe(
-    "https://spotistats.otbeaumont.me/account/stats/callback",
+    "https://spotistats.example/account/stats/callback",
   );
   // Safari dropped the old state cookie before the callback. The state must
   // carry its own proof so the handshake needs no browser storage.
@@ -55,7 +55,7 @@ it("sends the user to Spotify with a signed state and no cookie", async () => {
 
 it("does not bounce a resumed request again", async () => {
   const response = await login(
-    "https://spotistats.otbeaumont.me/account/stats/login?resumed=1",
+    "https://spotistats.example/account/stats/login?resumed=1",
   );
   expect(locationOf(response)).not.toContain("/account/stats/login");
 });

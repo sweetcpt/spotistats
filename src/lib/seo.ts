@@ -1,4 +1,6 @@
-export const siteUrl = "https://spotistats.otbeaumont.me";
+export const siteUrl =
+  (import.meta.env.VITE_SITE_URL as string | undefined)?.replace(/\/+$/, "") ||
+  "https://spotistats.example";
 export const siteName = "Spotistats";
 export const siteTitle =
   "Spotistats — Spotify listening stats, history & backup";
@@ -66,10 +68,8 @@ export const titleForPath = (path: string) => titleByPath(path);
 /**
  * The canonical URL for a path.
  *
- * Built from `siteUrl` rather than the current location, so the canonical tag
- * names the same host from any deployment. The legacy `spotistats.js.org` alias
- * redirects to this host at the edge, so it is never the URL search engines
- * index.
+ * Built from the deployment's configured site URL so each installation points
+ * canonical tags at its own hostname.
  */
 export const canonicalUrl = (path: string, search = "") => `${siteUrl}${path}${search}`;
 

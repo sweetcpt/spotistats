@@ -5,10 +5,8 @@
 <p align="center">
     Spotistats is a tool designed to analyse and backup your music on Spotify!
     <br />
-    <a target="_blank" href="https://spotistats.otbeaumont.me">https://spotistats.otbeaumont.me</a>
+    <a target="_blank" href="https://github.com/oscartbeaumont/spotistats">Upstream source on GitHub</a>
 </p>
-
-Previously [https://spotistats.js.org].
 
 # Stack
 
@@ -71,6 +69,38 @@ pnpm dev
 starting the server. Local migrations and the Vite plugin both use
 `.cloudflare/state`, so a new worktree starts with an empty but usable database.
 Local stats are separate from production; connect stats locally to collect plays.
+
+# Personal Cloudflare deployment
+
+This fork uses a separate Worker, D1 database, and Queue. It uses the account
+selected by the authenticated `cf` CLI profile, publishes through `workers.dev`,
+and runs the history sync every 15 minutes. It does not reuse the upstream
+Cloudflare account, database, Queue, domain, or Spotify app.
+
+Set these GitHub repository variables for the deployment workflow:
+
+- `CLOUDFLARE_ACCOUNT_ID`
+- `VITE_SPOTIFY_CLIENT_ID`
+- `VITE_SITE_URL`
+- `VITE_GITHUB_REPOSITORY` (for example, `sweetcpt/spotistats`)
+
+Add `CLOUDFLARE_API_TOKEN` as a GitHub Actions secret. The Spotify Client Secret
+must be stored as a Cloudflare Worker secret named `SPOTIFY_CLIENT_SECRET`; do
+not add it to GitHub. `SPOTIFY_TOKEN_ENCRYPTION_KEY` is also a Worker secret and
+must contain a base64-encoded 32-byte key. Refresh tokens are AES-GCM encrypted
+before they are written to D1.
+
+Register both Spotify redirect URIs for the deployed Worker:
+
+- `https://<worker-host>` for browser PKCE sign-in
+- `https://<worker-host>/account/stats/callback` for listening-stats authorization
+
+The first sync imports the most recent page Spotify returns (up to 50 plays),
+then the Worker continues collecting new plays. Spotify's recently-played API
+does not provide lifetime playback history.
+
+The original PostHog project is not used. Analytics and the PostHog proxy stay
+disabled unless the instance owner explicitly configures a project key.
 
 # Secrets
 

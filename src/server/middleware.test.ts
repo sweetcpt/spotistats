@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("./handler", () => ({ ServicesLive: {}, apiHandler: vi.fn() }));
 vi.mock("./oauth", () => ({ statsLogin: vi.fn(), statsCallback: vi.fn() }));
+vi.mock("cloudflare:workers", () => ({ env: { VITE_POSTHOG_KEY: "" } }));
 
 import middleware from "./middleware";
 
@@ -14,7 +15,7 @@ const call = (path: string) => {
       }),
   );
   const event = {
-    request: new Request(`https://spotistats.otbeaumont.me${path}`),
+    request: new Request(`https://spotistats.example${path}`),
   } as unknown as Parameters<typeof middleware>[0];
   return middleware(event, next).then((response) => ({ response, next }));
 };

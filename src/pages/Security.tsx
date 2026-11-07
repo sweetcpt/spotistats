@@ -16,7 +16,7 @@ export default function SecurityPage() {
         <p>
           Please report security issues privately through{" "}
           <a
-            href="https://github.com/oscartbeaumont/spotistats/security/advisories/new"
+            href="https://github.com/sweetcpt/spotistats/security/advisories/new"
             target="_blank"
             rel="noopener noreferrer"
             class="font-bold underline"
@@ -39,8 +39,7 @@ export default function SecurityPage() {
         <p>In scope:</p>
         <ul class="mt-2 list-disc space-y-2 pl-5">
           <li>
-            The Spotistats web app at{" "}
-            <code>spotistats.otbeaumont.me</code> and its API.
+            This Spotistats deployment and its API.
           </li>
           <li>The source in this repository, including the worker.</li>
           <li>

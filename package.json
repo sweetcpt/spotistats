@@ -20,8 +20,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "cf-typegen": "cf workers types",
-    "db:migrate:local": "cf d1 migrations apply 7529dabd-7b6d-42f6-ac94-ddc3db1332ab --local --persist-to .cloudflare/state",
-    "db:migrate:remote": "cf d1 migrations apply 7529dabd-7b6d-42f6-ac94-ddc3db1332ab"
+    "db:migrate:local": "cf d1 migrations apply 00000000-0000-4000-8000-000000000001 --local --persist-to .cloudflare/state",
+    "db:migrate:remote": "node scripts/migrate-remote.mjs"
   },
   "dependencies": {
     "@effect/sql-d1": "^4.0.5",

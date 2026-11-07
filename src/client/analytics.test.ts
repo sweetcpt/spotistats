@@ -5,7 +5,7 @@ vi.mock("posthog-js", () => ({ default: posthog }));
 
 import { isInjectedScriptError } from "./analytics";
 
-const origin = "https://spotistats.otbeaumont.me";
+const origin = "https://spotistats.example";
 const loginPage = `${origin}/login`;
 
 describe("isInjectedScriptError", () => {
@@ -99,12 +99,14 @@ describe("isInjectedScriptError", () => {
 describe("analytics exception filter", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
     vi.resetModules();
     posthog.init.mockClear();
   });
 
   it("drops injected-script exceptions before they reach PostHog", async () => {
     vi.stubGlobal("window", { location: { href: loginPage } });
+    vi.stubEnv("VITE_POSTHOG_KEY", "test-posthog-project-key");
     const dev = import.meta.env.DEV;
     import.meta.env.DEV = false;
     try {

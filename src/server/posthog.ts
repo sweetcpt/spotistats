@@ -1,12 +1,8 @@
-/**
- * Proxies requests to PostHog.
- *
- * The path has a random name so ad blockers are less likely to match it. The
- * browser sends analytics here (`api_host: "/ph_ed90f8"`), and this module
- * forwards the request to PostHog's ingestion or assets host.
- */
+import { env } from "cloudflare:workers";
 
-const pathPrefix = "/ph_ed90f8";
+/** Optional same-origin proxy for a PostHog project configured by the owner. */
+
+const pathPrefix = "/ph";
 const allowedMethods = new Set(["GET", "POST"]);
 
 /** Same-origin and platform headers that must not reach a third party. */
@@ -18,10 +14,14 @@ const privateHeaders = new Set([
 ]);
 
 export function isPostHogPath(pathname: string): boolean {
-  return pathname === pathPrefix || pathname.startsWith(`${pathPrefix}/`);
+  return Boolean(env.VITE_POSTHOG_KEY) &&
+    (pathname === pathPrefix || pathname.startsWith(`${pathPrefix}/`));
 }
 
 export function proxyPostHog(request: Request): Promise<Response> {
+  if (!env.VITE_POSTHOG_KEY) {
+    return Promise.resolve(new Response("Not Found", { status: 404 }));
+  }
   if (!allowedMethods.has(request.method)) {
     return Promise.resolve(new Response("Method Not Allowed", { status: 405 }));
   }

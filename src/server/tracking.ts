@@ -19,6 +19,7 @@ import {
   type SpotifyProfile,
   type SpotifyToken,
 } from "./spotify";
+import { decryptRefreshToken, encryptRefreshToken } from "./token-crypto";
 import { nextWatermark } from "./watermark";
 
 /**
@@ -34,6 +35,28 @@ const databaseError = (message: string) => (cause: { readonly message: string })
 
 const queueError = (message: string) => (cause: unknown) =>
   new UpstreamError({ service: "queue", message: `${message}: ${String(cause)}`, status: null });
+
+const encryptToken = (spotifyUserId: string, refreshToken: string) =>
+  Effect.tryPromise({
+    try: () => encryptRefreshToken(spotifyUserId, refreshToken),
+    catch: () =>
+      new UpstreamError({
+        service: "encryption",
+        message: "Failed to encrypt the Spotify refresh token",
+        status: null,
+      }),
+  });
+
+const decryptToken = (spotifyUserId: string, storedValue: string) =>
+  Effect.tryPromise({
+    try: () => decryptRefreshToken(spotifyUserId, storedValue),
+    catch: () =>
+      new UpstreamError({
+        service: "encryption",
+        message: "Failed to decrypt the Spotify refresh token",
+        status: null,
+      }),
+  });
 
 const listenId = (spotifyUserId: string, trackId: string, playedAtMs: number) =>
   `${spotifyUserId}:${trackId}:${playedAtMs}`;
@@ -130,6 +153,10 @@ const make = Effect.gen(function* () {
           }),
         );
       }
+      const encryptedRefreshToken = yield* encryptToken(
+        profile.id,
+        token.refresh_token,
+      );
       const now = Date.now();
       yield* sql`
         INSERT INTO spotify_tracking_users
@@ -147,7 +174,7 @@ const make = Effect.gen(function* () {
 
       yield* sql`
         INSERT INTO spotify_tokens (spotify_user_id, refresh_token, scope, updated_at)
-        VALUES (${profile.id}, ${token.refresh_token}, ${token.scope}, ${now})
+        VALUES (${profile.id}, ${encryptedRefreshToken}, ${token.scope}, ${now})
         ON CONFLICT(spotify_user_id) DO UPDATE SET
           refresh_token = excluded.refresh_token,
           scope = excluded.scope,
@@ -294,8 +321,8 @@ const make = Effect.gen(function* () {
 
   const refreshAccessToken = (spotifyUserId: string) =>
     Effect.gen(function* () {
-      const rows = yield* sql<{ refreshToken: string }>`
-        SELECT refresh_token AS refreshToken FROM spotify_tokens WHERE spotify_user_id = ${spotifyUserId}
+      const rows = yield* sql<{ refreshToken: string; scope: string }>`
+        SELECT refresh_token AS refreshToken, scope FROM spotify_tokens WHERE spotify_user_id = ${spotifyUserId}
       `.pipe(Effect.mapError(databaseError("Failed to read refresh token")));
       const row = rows[0];
       if (!row) {
@@ -307,11 +334,16 @@ const make = Effect.gen(function* () {
           }),
         );
       }
-      const token = yield* spotify.refreshToken(row.refreshToken);
-      if (token.refresh_token) {
+      const stored = yield* decryptToken(spotifyUserId, row.refreshToken);
+      const token = yield* spotify.refreshToken(stored.token);
+      if (token.refresh_token || !stored.encrypted) {
+        const encryptedRefreshToken = yield* encryptToken(
+          spotifyUserId,
+          token.refresh_token ?? stored.token,
+        );
         yield* sql`
           UPDATE spotify_tokens
-          SET refresh_token = ${token.refresh_token}, scope = ${token.scope}, updated_at = ${Date.now()}
+          SET refresh_token = ${encryptedRefreshToken}, scope = ${token.scope || row.scope}, updated_at = ${Date.now()}
           WHERE spotify_user_id = ${spotifyUserId}
         `.pipe(Effect.mapError(databaseError("Failed to persist refreshed token")));
       }

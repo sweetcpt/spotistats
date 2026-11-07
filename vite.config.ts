@@ -7,9 +7,11 @@ import tailwindcss from "@tailwindcss/vite";
 import solid from "@solidjs/vite-plugin";
 import { defineConfig, type Plugin } from "vite";
 
-// The Cloudflare build does not always have this set, but it is public.
-if (!process.env?.VITE_SPOTIFY_CLIENT_ID)
-  process.env.VITE_SPOTIFY_CLIENT_ID = "1107a25b98c041bb90c9063553e5f1a8";
+// These values are public build configuration. No upstream deployment values
+// are included as defaults; production builds supply them through CI.
+process.env.VITE_SPOTIFY_CLIENT_ID ??= "";
+process.env.VITE_SITE_URL ??= "";
+process.env.VITE_POSTHOG_KEY ??= "";
 
 /**
  * `cf build` runs the Solid client build twice: an early client build, the
@@ -43,25 +45,45 @@ function solidClientManifest(): Plugin {
 
       const code = readFileSync(bundlePath, "utf8");
       const marker = code.indexOf("virtual:solid-manifest");
-      const declarationStart = marker < 0 ? -1 : code.indexOf("var ", marker);
-      const declaration =
-        declarationStart < 0
-          ? null
-          : /^var\s+([A-Za-z0-9_$]+)\s*=\s*\{/.exec(code.slice(declarationStart));
-      const declarationEnd = declaration
-        ? code.indexOf("\n};", declarationStart)
-        : -1;
-      if (!declaration || declarationEnd < 0) {
-        throw new Error(
-          "Could not find the Solid client manifest in the Worker bundle.",
-        );
+      if (marker < 0) {
+        throw new Error("Could not find the Solid client manifest in the Worker bundle.");
       }
 
-      // The fallback build names the virtual manifest variable after the
-      // plugin's internal alias. A build that found a client manifest inlines
-      // it as `manifest` instead.
-      const replacement = `var ${declaration[1]} = ${JSON.stringify(manifest)};\n`;
-      const withManifest = `${code.slice(0, declarationStart)}${replacement}${code.slice(declarationEnd + "\n};".length)}`;
+      // Newer Solid plugin builds emit a runtime resolver while the Worker is
+      // bundled, then the final client manifest becomes available later in the
+      // Cloudflare build. Replace that resolver with the completed manifest.
+      const resolver = /var\s+([A-Za-z0-9_$]+)\s*=\s*registry\s*&&\s*registry\[[^\]]+\]\s*\|\|[\s\S]*?;(?=\n)/.exec(
+        code.slice(marker),
+      );
+      let withManifest: string;
+
+      if (resolver) {
+        const start = marker + resolver.index;
+        const replacement = `var ${resolver[1]} = ${JSON.stringify(manifest)};`;
+        withManifest = `${code.slice(0, start)}${replacement}${code.slice(start + resolver[0].length)}`;
+      } else {
+        // Keep support for the earlier plugin output, which emitted an object
+        // literal directly instead of the runtime bridge resolver.
+        const declarationStart = code.indexOf("var ", marker);
+        const declaration =
+          declarationStart < 0
+            ? null
+            : /^var\s+([A-Za-z0-9_$]+)\s*=\s*\{/.exec(code.slice(declarationStart));
+        const declarationEnd = declaration
+          ? code.indexOf("\n};", declarationStart)
+          : -1;
+        if (!declaration || declarationEnd < 0) {
+          throw new Error(
+            "Could not find the Solid client manifest in the Worker bundle.",
+          );
+        }
+
+        // The fallback build names the virtual manifest variable after the
+        // plugin's internal alias. A build that found a client manifest inlines
+        // it as `manifest` instead.
+        const replacement = `var ${declaration[1]} = ${JSON.stringify(manifest)};\n`;
+        withManifest = `${code.slice(0, declarationStart)}${replacement}${code.slice(declarationEnd + "\n};".length)}`;
+      }
 
       // Solid appends a `$$moduleUrl` export to every SSR module. The Worker
       // entry re-exports it, but Workers module exports must be functions or
@@ -82,6 +104,42 @@ function solidClientManifest(): Plugin {
       const distManifest = path.resolve("dist/client/.vite/manifest.json");
       mkdirSync(path.dirname(distManifest), { recursive: true });
       writeFileSync(distManifest, JSON.stringify(manifest));
+
+      const siteUrl = process.env.VITE_SITE_URL?.replace(/\/+$/, "");
+      if (siteUrl) {
+        const publicDir = path.resolve(outDir);
+        const sitemap = ["/", "/privacy", "/security"]
+          .map((route) => `  <url><loc>${siteUrl}${route}</loc></url>`)
+          .join("\n");
+        writeFileSync(
+          path.join(publicDir, "sitemap.xml"),
+          `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemap}\n</urlset>\n`,
+        );
+
+        const robotsPath = path.join(publicDir, "robots.txt");
+        const robots = existsSync(robotsPath)
+          ? readFileSync(robotsPath, "utf8").replace(/^Sitemap:.*\n?/gim, "").trimEnd()
+          : "User-agent: *\nAllow: /";
+        writeFileSync(robotsPath, `${robots}\n\nSitemap: ${siteUrl}/sitemap.xml\n`);
+
+        const repository = (
+          process.env.VITE_GITHUB_REPOSITORY ??
+          process.env.GITHUB_REPOSITORY ??
+          "sweetcpt/spotistats"
+        ).replace(/^https:\/\/github\.com\//, "").replace(/\/$/, "");
+        if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository)) {
+          throw new Error("VITE_GITHUB_REPOSITORY must be owner/repository.");
+        }
+        const securityPath = path.join(publicDir, ".well-known/security.txt");
+        mkdirSync(path.dirname(securityPath), { recursive: true });
+        const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+          .toISOString()
+          .replace(/\.\d{3}Z$/, "Z");
+        writeFileSync(
+          securityPath,
+          `Contact: https://github.com/${repository}/security/advisories/new\nExpires: ${expires}\nPreferred-Languages: en\nCanonical: ${siteUrl}/.well-known/security.txt\nPolicy: ${siteUrl}/security\n`,
+        );
+      }
     },
   };
 }
