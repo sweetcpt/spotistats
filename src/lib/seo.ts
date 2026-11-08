@@ -3,12 +3,12 @@ export const siteUrl =
   "https://spotistats.example";
 export const siteName = "Spotistats";
 export const siteTitle =
-  "Spotistats — Spotify listening stats, history & backup";
+  "Spotistats — Spotify 听歌统计、历史记录与备份";
 export const siteDescription =
-  "Spotistats is a free Spotify stats app that keeps your listening history, shows your top artists and streaks, and lets you export your playlists and play data.";
+  "Spotistats 是一款免费的 Spotify 统计应用，可保存你的听歌历史，展示最常听的艺人和连续收听记录，并支持导出歌单与播放数据。";
 export const siteImage = `${siteUrl}/assets/og.png`;
 export const siteImageAlt =
-  "Spotistats — your Spotify listening stats, history and backup, decoded.";
+  "Spotistats — 解读你的 Spotify 听歌统计、历史记录与备份";
 export interface SiteFaq {
   readonly question: string;
   readonly answer: string;
@@ -16,51 +16,51 @@ export interface SiteFaq {
 
 export const siteFaq: readonly SiteFaq[] = [
   {
-    question: "What is Spotistats?",
+    question: "Spotistats 是什么？",
     answer:
-      "Spotistats is a free web app that analyses your Spotify listening history and backs up your music. It shows your top artists and tracks, listening streaks, hourly patterns, and the shape of your year.",
+      "Spotistats 是一款免费的网页应用，可分析你的 Spotify 听歌历史并备份你的音乐。它会展示你最常听的艺人和曲目、连续收听记录、各时段的收听习惯，以及你这一年的收听全貌。",
   },
   {
-    question: "How is this different from Spotify Wrapped?",
+    question: "它和 Spotify 年度回顾有什么不同？",
     answer:
-      "Wrapped is a yearly recap from Spotify. Spotistats keeps a running history you can explore at any time, shows stats Spotify does not expose, and lets you export the data.",
+      "年度回顾是 Spotify 每年推出的一次总结。Spotistats 则持续记录历史，你可以随时查看，还能看到 Spotify 未公开的统计，并导出这些数据。",
   },
   {
-    question: "How does Spotistats get my listening history?",
+    question: "Spotistats 如何获取我的听歌历史？",
     answer:
-      "You connect Spotify, then opt in to listening-stats sync. Spotistats stores the recently played tracks Spotify returns and builds your history server-side. You can disconnect or delete it from your account page.",
+      "你先连接 Spotify，再主动开启听歌统计同步。Spotistats 会保存 Spotify 返回的最近播放曲目，并在服务端构建你的历史记录。你可以随时在账户页面断开连接或删除数据。",
   },
   {
-    question: "Can I export my Spotify data?",
+    question: "我能导出自己的 Spotify 数据吗？",
     answer:
-      "Yes. Export your playlists as CSV, or download every listen Spotistats stores as JSON or CSV from the account page.",
+      "可以。你可以把歌单导出为 CSV，也可以在账户页面把 Spotistats 保存的每一条听歌记录下载为 JSON 或 CSV。",
   },
   {
-    question: "Is Spotistats free?",
+    question: "Spotistats 免费吗？",
     answer:
-      "Yes. Spotistats is free, has no ads, and does not have a paid tier.",
+      "是的。Spotistats 完全免费，没有广告，也没有付费版本。",
   },
   {
-    question: "Does Spotistats see my Spotify password?",
+    question: "Spotistats 会看到我的 Spotify 密码吗？",
     answer:
-      "No. Sign-in happens through Spotify OAuth. Spotistats never receives your Spotify password.",
+      "不会。登录通过 Spotify OAuth 完成，Spotistats 永远不会收到你的 Spotify 密码。",
   },
 ];
 
 const titleByPath = (path: string) => {
   if (path === "/" || path === "/login") return siteTitle;
   if (path.startsWith("/favourites/tracks"))
-    return "Favourite Spotify tracks — Spotistats";
+    return "最爱的 Spotify 曲目 — Spotistats";
   if (path.startsWith("/favourites/albums"))
-    return "Saved Spotify albums — Spotistats";
+    return "收藏的 Spotify 专辑 — Spotistats";
   if (path.startsWith("/export"))
-    return "Export your Spotify data — Spotistats";
+    return "导出你的 Spotify 数据 — Spotistats";
   if (path.startsWith("/account"))
-    return "Spotify stats account — Spotistats";
-  if (path.startsWith("/discover")) return "Discover music — Spotistats";
-  if (path.startsWith("/privacy")) return "Privacy policy — Spotistats";
-  if (path.startsWith("/security")) return "Security policy — Spotistats";
-  return "Spotistats — Your Spotify, decoded";
+    return "Spotify 统计账户 — Spotistats";
+  if (path.startsWith("/discover")) return "发现音乐 — Spotistats";
+  if (path.startsWith("/privacy")) return "隐私政策 — Spotistats";
+  if (path.startsWith("/security")) return "安全政策 — Spotistats";
+  return "Spotistats — 解读你的 Spotify";
 };
 
 export const titleForPath = (path: string) => titleByPath(path);
@@ -99,7 +99,7 @@ export function jsonLdFor(publicPage: boolean) {
       url: `${siteUrl}/`,
       name: siteName,
       description: siteDescription,
-      inLanguage: "en",
+      inLanguage: "zh-CN",
       publisher: {
         "@type": "Person",
         name: "Oscar Beaumont",
@@ -114,9 +114,9 @@ export function jsonLdFor(publicPage: boolean) {
       description: siteDescription,
       applicationCategory: "MusicApplication",
       operatingSystem: "Web",
-      browserRequirements: "Requires JavaScript",
+      browserRequirements: "需要启用 JavaScript",
       isAccessibleForFree: true,
-      inLanguage: "en",
+      inLanguage: "zh-CN",
       offers: {
         "@type": "Offer",
         price: "0",
@@ -130,11 +130,11 @@ export function jsonLdFor(publicPage: boolean) {
       sameAs: ["https://github.com/oscartbeaumont/spotistats"],
       screenshot: siteImage,
       featureList: [
-        "Spotify listening history",
-        "Top artists and tracks",
-        "Listening streaks and hourly patterns",
-        "Playlist export",
-        "Listening-data export",
+        "Spotify 听歌历史",
+        "常听艺人与曲目",
+        "连续收听天数与时段分布",
+        "播放列表导出",
+        "播放数据导出",
       ],
     },
   ];

@@ -77,7 +77,7 @@ export class SpotifyRequestError extends Schema.TaggedError<SpotifyRequestError>
   { cause: Schema.Unknown, message: Schema.String },
 ) {
   constructor(readonly cause: unknown) {
-    super({ cause, message: "Spotistats: Spotify request failed" });
+    super({ cause, message: "Spotistats：Spotify 请求失败" });
   }
 }
 
@@ -340,7 +340,7 @@ const request = <S extends Schema.ConstraintDecoder<unknown>>(
       try: () => response.json(),
       catch: (cause) =>
         new SpotifyApiError(response.status, {
-          error: "Spotify response body could not be read",
+          error: "无法读取 Spotify 响应内容",
           detail: String(cause),
         }),
     });
@@ -518,7 +518,7 @@ export type CreatedPlaylist = typeof CreatedPlaylist.Type;
 
 export const createPrivatePlaylist = (name: string) =>
   request(CreatedPlaylist, "https://api.spotify.com/v1/me/playlists", {
-    method: "POST", body: { name, public: false, collaborative: false, description: "Selected with Spotistats. Music supplied by Spotify." },
+    method: "POST", body: { name, public: false, collaborative: false, description: "由 Spotistats 精选，音乐由 Spotify 提供。" },
   });
 
 /** Replace only the new playlist we just created, so an explicit retry cannot append duplicates. */

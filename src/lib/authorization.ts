@@ -51,10 +51,10 @@ export function isClientCredentialFailure(body: string): boolean {
 export function reauthMessage(body = ""): string {
   switch (spotifyErrorCode(body)) {
     case "invalid_grant":
-      return "Spotify expired this account's saved authorization: refresh tokens last six months. Reconnect Spotify stats to resume syncing.";
+      return "Spotify 已让该账户保存的授权过期：刷新令牌有效期为六个月。重新连接 Spotify 统计即可继续同步。";
     case "invalid_client":
-      return "Spotify rejected the app's credentials, so syncing is paused until that is fixed.";
+      return "Spotify 拒绝了应用的凭据，同步已暂停，修复后会自动恢复。";
     default:
-      return "Spotify no longer accepts this account's saved authorization. Reconnect Spotify stats to resume syncing.";
+      return "Spotify 已不接受该账户保存的授权。重新连接 Spotify 统计即可继续同步。";
   }
 }

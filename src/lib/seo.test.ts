@@ -29,8 +29,8 @@ describe("public route helpers", () => {
   });
 
   it("titles the policy pages distinctly", () => {
-    expect(titleForPath("/privacy")).toContain("Privacy");
-    expect(titleForPath("/security")).toContain("Security");
+    expect(titleForPath("/privacy")).toContain("隐私");
+    expect(titleForPath("/security")).toContain("安全");
     expect(titleForPath("/")).toBe(titleForPath("/login"));
   });
 });

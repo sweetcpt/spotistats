@@ -22,12 +22,12 @@ import { createShortcut, isEditableShortcutTarget } from "~/lib/shortcut";
 
 /** Fixed reason codes the worker puts on a failed stats handshake. */
 const statsFailureMessages: Record<string, string> = {
-  spotify_denied: "Spotify did not grant access.",
-  spotify_credentials: "Spotify rejected the app's credentials.",
-  missing_code: "Spotify did not return an authorization code.",
-  missing_state: "The Spotify handshake was missing its state.",
-  invalid_state: "The Spotify handshake expired or was invalid.",
-  internal_error: "The Spotify handshake failed on the server.",
+  spotify_denied: "Spotify 未授予访问权限。",
+  spotify_credentials: "Spotify 拒绝了应用的凭证。",
+  missing_code: "Spotify 未返回授权码。",
+  missing_state: "Spotify 授权握手缺少 state 参数。",
+  invalid_state: "Spotify 授权握手已过期或无效。",
+  internal_error: "Spotify 授权握手在服务端失败。",
 };
 
 export default function AccountPage() {
@@ -61,9 +61,9 @@ export default function AccountPage() {
       ? statsFailureMessages[statsFailure]
       : undefined;
     throw new Error(
-      `Connecting Spotify listening stats did not complete.${
+      `连接 Spotify 播放统计未完成。${
         explanation ? ` ${explanation}` : ""
-      } Try connecting again; if it keeps failing, report this error.`,
+      } 请重试连接；若持续失败，请反馈此问题。`,
     );
   }
 
@@ -115,7 +115,7 @@ export default function AccountPage() {
     if (deleting()) return;
     if (
       !confirm(
-        "Delete all Spotistats account data stored by this site? This also stops stats sync.",
+        "确定删除本站存储的该账号的全部 Spotistats 数据？此操作也会停止统计同步。",
       )
     ) {
       return;
@@ -168,12 +168,12 @@ export default function AccountPage() {
 
   return (
     <main class="app-main p-8 md:p-12">
-      <PageHeader title="Account" eyebrow="Stats Sync" />
+      <PageHeader title="账号" eyebrow="统计同步" />
 
       <Show when={statsResult() === "enabled"}>
         <pre class="overflow-auto p-4 text-xs mb-6 border-4 border-[#0a0a0a] bg-[#1DB954] text-[#0a0a0a]">
           <samp>
-            Listening stats connected. Your recent plays will sync shortly.
+            播放统计已连接，近期播放记录将很快同步。
           </samp>
         </pre>
       </Show>
@@ -181,35 +181,33 @@ export default function AccountPage() {
       <Show when={actionError()}>
         {(value) => (
           <pre class="overflow-auto p-4 text-xs mb-6 text-red-600 border-4 border-[#0a0a0a] bg-[#0a0a0a]">
-            <samp>Action failed: {value()}</samp>
+            <samp>操作失败：{value()}</samp>
           </pre>
         )}
       </Show>
 
-      <Loading fallback={<p class="text-sm uppercase tracking-widest text-[#5c5c5c]">LOADING_</p>}>
+      <Loading fallback={<p class="text-sm uppercase tracking-widest text-[#5c5c5c]">加载中_</p>}>
         <section class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,28rem)]">
           <div class="contents">
             <div class="p-5 border-4 border-[#0a0a0a] lg:col-start-1 lg:row-start-1">
               <div class="text-xs uppercase tracking-[0.2em] mb-3 text-[#5c5c5c]">
-                Listening Stats
+                播放统计
               </div>
               <h2 class="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none mb-4">
-                {stats().enabled ? "Enabled" : "Disabled"}
+                {stats().enabled ? "已启用" : "已停用"}
               </h2>
               <p class="text-sm max-w-xl mb-6 leading-[1.7] text-[#555]">
-                When enabled, Spotistats securely stores your recently played
-                Spotify tracks so your listening stats can build over time.
+                启用后，Spotistats 会安全存储你最近播放的 Spotify 曲目，逐步积累你的播放统计。
               </p>
               <Show
                 when={stats().enabled}
                 fallback={
                   <div class="mb-6 border-[3px] border-[#0a0a0a] bg-[#fff7c2] p-4 text-sm leading-7 text-[#3b3200]">
                     <p class="mb-1 font-black uppercase tracking-tight">
-                      Listening stats are disabled
+                      播放统计已停用
                     </p>
                     <p>
-                      Connect Spotify stats to sync recent listens and build your
-                      dashboard over time.
+                      连接 Spotify 统计以同步近期播放，逐步构建你的数据面板。
                     </p>
                   </div>
                 }
@@ -222,12 +220,11 @@ export default function AccountPage() {
                 >
                   <div class="mb-6 border-[3px] border-[#0a0a0a] bg-[#fff7c2] p-4 text-sm leading-7 text-[#3b3200]">
                     <p class="mb-1 font-black uppercase tracking-tight">
-                      Spotify authorization expiring
+                      Spotify 授权即将过期
                     </p>
                     <p>
-                      Spotify logins last six months. Reconnect before{" "}
-                      {formatDate(stats().authorizationExpiresAt)} to keep
-                      syncing without a gap.
+                      Spotify 登录有效期为六个月。请在{" "}
+                      {formatDate(stats().authorizationExpiresAt)} 前重新连接，以免同步中断。
                     </p>
                     <button
                       type="button"
@@ -236,31 +233,30 @@ export default function AccountPage() {
                       }}
                       class="mt-3 font-black text-sm uppercase tracking-widest py-3 px-6 transition border-4 border-[#0a0a0a] bg-[#0a0a0a] text-[#f0ede8] hover:bg-[#1DB954] hover:text-black"
                     >
-                      Reconnect Spotify Stats →
+                      重新连接 Spotify 统计 →
                     </button>
                   </div>
                 </Show>
                 <div class="grid gap-3 text-xs uppercase tracking-widest mb-4 text-[#666]">
                   <p>
-                    <span class="font-black text-[#0a0a0a]">Consented:</span>{" "}
+                    <span class="font-black text-[#0a0a0a]">已授权：</span>{" "}
                     {formatDate(stats().consentedAt)}
                   </p>
                   <p>
-                    <span class="font-black text-[#0a0a0a]">Last Sync:</span>{" "}
+                    <span class="font-black text-[#0a0a0a]">上次同步：</span>{" "}
                     {formatDate(stats().lastSuccessAt)}
                   </p>
                   <p>
-                    <span class="font-black text-[#0a0a0a]">Newest Listen:</span>{" "}
+                    <span class="font-black text-[#0a0a0a]">最近播放：</span>{" "}
                     {formatDate(stats().lastPlayedAtMs)}
                   </p>
                   <p>
-                    <span class="font-black text-[#0a0a0a]">Listens Tracked:</span>{" "}
+                    <span class="font-black text-[#0a0a0a]">已记录播放次数：</span>{" "}
                     {stats().listenCount.toLocaleString()}
                   </p>
                 </div>
                 <p class="mb-6 text-xs leading-6 text-[#5c5c5c]">
-                  Stats sync pauses automatically after 6 months without opening
-                  the dashboard.
+                  若连续 6 个月未打开数据面板，统计同步会自动暂停。
                 </p>
               </Show>
               <Show when={stats().lastError}>
@@ -280,7 +276,7 @@ export default function AccountPage() {
                     }}
                     class="font-black text-sm uppercase tracking-widest py-4 px-8 transition border-4 border-[#0a0a0a] bg-[#0a0a0a] text-[#f0ede8] hover:bg-[#1DB954] hover:text-black"
                   >
-                    Connect Spotify Stats →
+                    连接 Spotify 统计 →
                   </button>
                 }
               >
@@ -290,24 +286,22 @@ export default function AccountPage() {
                     disabled={disabling()}
                     onClick={disableStats}
                     class="font-black text-sm uppercase tracking-widest py-4 px-8 transition disabled:opacity-50 border-4 border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#f0ede8]"
-                    title="Shortcut: Shift+D"
+                    title="快捷键：Shift+D"
                   >
-                    {disabling() ? "Disabling_" : "Disable Stats (Shift+D)"}
+                    {disabling() ? "停用中_" : "停用统计 (Shift+D)"}
                   </button>
                 </div>
               </Show>
             </div>
             <div class="p-5 border-4 border-[#0a0a0a] bg-[#f8f5ef] lg:col-start-2 lg:row-start-1">
               <div class="text-xs uppercase tracking-[0.2em] mb-3 text-[#5c5c5c]">
-                Export Your Data
+                导出你的数据
               </div>
               <h2 class="text-2xl font-black uppercase tracking-tighter leading-none mb-3">
-                Your plays, portable
+                你的播放记录，随时带走
               </h2>
               <p class="text-sm max-w-xl mb-5 leading-[1.7] text-[#555]">
-                Download every listen Spotistats has stored for this account:
-                track, artists, album, context and timestamp. Exporting does not
-                stop sync or change what is stored.
+                下载 Spotistats 为该账号存储的每一条播放记录：曲目、艺人、专辑、播放来源和时间戳。导出不会停止同步，也不会改动已存储的数据。
               </p>
               <div class="flex flex-wrap gap-3">
                 <button
@@ -316,7 +310,7 @@ export default function AccountPage() {
                   onClick={() => void exportListeningData("json")}
                   class="font-black text-sm uppercase tracking-widest py-4 px-8 transition disabled:opacity-50 border-4 border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#f0ede8]"
                 >
-                  {exporting() === "json" ? "Preparing_" : "Download JSON ↓"}
+                  {exporting() === "json" ? "准备中_" : "下载 JSON ↓"}
                 </button>
                 <button
                   type="button"
@@ -324,17 +318,16 @@ export default function AccountPage() {
                   onClick={() => void exportListeningData("csv")}
                   class="font-black text-sm uppercase tracking-widest py-4 px-8 transition disabled:opacity-50 border-4 border-[#0a0a0a] hover:bg-[#1DB954] hover:text-black"
                 >
-                  {exporting() === "csv" ? "Preparing_" : "Download CSV ↓"}
+                  {exporting() === "csv" ? "准备中_" : "下载 CSV ↓"}
                 </button>
               </div>
             </div>
             <div class="p-5 border-4 border-red-800 lg:col-start-1 lg:row-start-2">
               <div class="text-xs uppercase tracking-[0.2em] mb-3 text-red-700">
-                Danger Zone
+                危险操作
               </div>
               <p class="text-sm max-w-xl mb-5 leading-[1.7] text-[#555]">
-                Delete all account data stored by Spotistats for this Spotify
-                account. This also stops stats sync.
+                删除 Spotistats 为该 Spotify 账号存储的全部数据。此操作也会停止统计同步。
               </p>
               <button
                 type="button"
@@ -342,7 +335,7 @@ export default function AccountPage() {
                 onClick={deleteAccountData}
                 class="font-black text-sm uppercase tracking-widest py-4 px-8 text-red-700 transition disabled:opacity-50 border-4 border-red-800 hover:bg-red-700 hover:text-[#f0ede8]"
               >
-                {deleting() ? "Deleting_" : "Delete Site Data"}
+                {deleting() ? "删除中_" : "删除本站数据"}
               </button>
             </div>
           </div>
@@ -351,11 +344,11 @@ export default function AccountPage() {
 
       <p class="mt-10 text-[0.65rem] uppercase tracking-widest text-[#5c5c5c]">
         <a href="/privacy" class="underline hover:text-[#0a0a0a]">
-          Privacy
+          隐私
         </a>
         {" · "}
         <a href="/security" class="underline hover:text-[#0a0a0a]">
-          Security
+          安全
         </a>
       </p>
     </main>

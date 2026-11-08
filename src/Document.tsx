@@ -10,7 +10,7 @@ import type { JSX } from "@solidjs/web";
  */
 export default function Document(props: { children?: JSX.Element }) {
   return (
-    <html lang="en">
+    <html lang="zh-CN">
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -37,15 +37,13 @@ export default function Document(props: { children?: JSX.Element }) {
           <main class="min-h-screen bg-[#f0ede8] p-8 md:p-16 text-[#0a0a0a]">
             <section class="max-w-xl border-4 border-[#0a0a0a] bg-[#f8f5ef] p-6 shadow-[8px_8px_0_#0a0a0a]">
               <div class="mb-3 text-xs font-black uppercase tracking-[0.2em] text-[#5c5c5c]">
-                JavaScript Required
+                需要启用 JavaScript
               </div>
               <p class="mb-4 text-4xl font-black uppercase tracking-tighter">
-                Spotistats needs JavaScript
+                Spotistats 需要 JavaScript
               </p>
               <p class="text-sm leading-7 text-[#555]">
-                This app connects to Spotify in your browser and uses
-                JavaScript to load your music data. Enable JavaScript, then
-                refresh the page.
+                这个应用会在浏览器里连接 Spotify，并用 JavaScript 加载你的音乐数据。请先启用 JavaScript，再刷新页面。
               </p>
             </section>
           </main>

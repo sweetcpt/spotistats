@@ -45,12 +45,12 @@ export default async function middleware(
   if (pathname === "/account/stats/login") {
     return request.method === "GET"
       ? withSecurityHeaders(await statsLogin(request))
-      : new Response("Method Not Allowed", { status: 405 });
+      : new Response("请求方法不允许", { status: 405 });
   }
 
   if (pathname === "/account/stats/callback") {
     if (request.method !== "GET") {
-      return new Response("Method Not Allowed", { status: 405 });
+      return new Response("请求方法不允许", { status: 405 });
     }
     const response = await Effect.runPromise(
       statsCallback(request).pipe(Effect.provide(ServicesLive), Effect.orDie),
@@ -71,7 +71,7 @@ export default async function middleware(
   // page render answered 200 with HTML: PostHog read `index.html` as a source
   // map, and a missing script looked like a successful download.
   if (pathname.startsWith("/assets/")) {
-    return withSecurityHeaders(new Response("Not Found", { status: 404 }));
+    return withSecurityHeaders(new Response("未找到", { status: 404 }));
   }
 
   return withSecurityHeaders(await next());

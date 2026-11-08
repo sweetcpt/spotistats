@@ -14,30 +14,30 @@ import {
  */
 export function ExportProgress() {
   const label = (status: string, progress: number) => {
-    if (status === "queued") return "Queued";
+    if (status === "queued") return "排队中";
     if (status === "running") return `${Math.round(progress * 100)}%`;
-    if (status === "done") return "Done";
-    return "Failed";
+    if (status === "done") return "已完成";
+    return "失败";
   };
 
   return (
     <Show when={exportJobs().length > 0}>
       <aside
-        aria-label="Playlist exports"
+        aria-label="播放列表导出"
         class="fixed bottom-4 right-4 z-50 w-72 max-w-[calc(100vw-2rem)] border-4 border-[#0a0a0a] bg-[#f0ede8] p-3 shadow-[6px_6px_0_#0a0a0a]"
       >
         <div class="mb-2 flex items-center justify-between gap-2">
           <span class="text-[0.65rem] font-black uppercase tracking-widest">
             {activeExportCount() > 0
-              ? `Exporting (${activeExportCount()})`
-              : "Exports"}
+              ? `导出中 (${activeExportCount()})`
+              : "导出任务"}
           </span>
           <button
             type="button"
             onClick={clearFinishedExports}
             class="text-[0.6rem] font-black uppercase tracking-widest transition hover:underline"
           >
-            Clear
+            清除
           </button>
         </div>
         <div class="max-h-64 overflow-y-auto">

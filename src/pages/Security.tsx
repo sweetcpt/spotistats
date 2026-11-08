@@ -8,85 +8,80 @@ import { LegalLayout } from "~/components/LegalLayout";
  */
 export default function SecurityPage() {
   return (
-    <LegalLayout title="Security Policy" updated="22 October 2026">
+    <LegalLayout title="安全政策" updated="2026 年 10 月 22 日">
       <section>
         <h2 class="mb-2 text-xs font-black uppercase tracking-[0.2em]">
-          Reporting a vulnerability
+          报告安全漏洞
         </h2>
         <p>
-          Please report security issues privately through{" "}
+          请通过{" "}
           <a
             href="https://github.com/sweetcpt/spotistats/security/advisories/new"
             target="_blank"
             rel="noopener noreferrer"
             class="font-bold underline"
           >
-            GitHub's private security advisories
+            GitHub 私密安全公告
           </a>
-          . Do not open a public issue for a suspected vulnerability.
+          私下报告安全问题。疑似漏洞请勿公开提交 issue。
         </p>
         <p class="mt-3">
-          Include enough detail to reproduce the problem: the URL, the steps,
-          and what you expected to happen. We will acknowledge the report and
-          keep you updated as we investigate.
+          请提供足以复现问题的细节：相关 URL、操作步骤，以及你预期发生的结果。我们会确认收到报告，并在调查过程中持续向你同步进展。
         </p>
       </section>
 
       <section>
         <h2 class="mb-2 text-xs font-black uppercase tracking-[0.2em]">
-          Scope
+          适用范围
         </h2>
-        <p>In scope:</p>
+        <p>以下情况在适用范围内：</p>
         <ul class="mt-2 list-disc space-y-2 pl-5">
           <li>
-            This Spotistats deployment and its API.
+            本 Spotistats 部署实例及其 API。
           </li>
-          <li>The source in this repository, including the worker.</li>
+          <li>本仓库中的源代码，包括 worker。</li>
           <li>
-            Authentication and session handling, including the listening-stats
-            OAuth flow.
+            身份验证与会话处理，包括听歌统计的 OAuth 流程。
           </li>
           <li>
-            Access to another user's stored listening history or tokens.
+            访问其他用户已保存的听歌历史或令牌。
           </li>
         </ul>
-        <p class="mt-3">Out of scope:</p>
+        <p class="mt-3">以下情况不在适用范围内：</p>
         <ul class="mt-2 list-disc space-y-2 pl-5">
-          <li>Spotify's own services and APIs.</li>
+          <li>Spotify 自有的服务与 API。</li>
           <li>
-            Denial of service, spam, or automated traffic against the hosted
-            site.
+            针对托管站点的拒绝服务攻击、垃圾信息或自动化流量。
           </li>
           <li>
-            Reports from automated scanners without a concrete, exploitable
-            finding.
+            自动化扫描器提交的、不含具体可利用发现的报告。
           </li>
         </ul>
       </section>
 
       <section>
         <h2 class="mb-2 text-xs font-black uppercase tracking-[0.2em]">
-          Please don't
+          请勿进行以下操作
         </h2>
         <ul class="list-disc space-y-2 pl-5">
-          <li>Access, change or delete data that is not yours.</li>
-          <li>Run destructive tests against the hosted service.</li>
+          <li>访问、修改或删除不属于你的数据。</li>
+          <li>对托管服务进行破坏性测试。</li>
           <li>
-            Use social engineering, or target the Spotify accounts of others.
+            使用社会工程手段，或针对他人的 Spotify 账户。
           </li>
         </ul>
       </section>
 
       <section>
         <h2 class="mb-2 text-xs font-black uppercase tracking-[0.2em]">
-          Machine-readable policy
+          机器可读的政策文件
         </h2>
         <p>
-          The standard security contact file is served at{" "}
+          标准的安全联系文件位于{" "}
           <a href="/.well-known/security.txt" class="font-bold underline">
             /.well-known/security.txt
           </a>
-          .
+          。
         </p>
       </section>
     </LegalLayout>

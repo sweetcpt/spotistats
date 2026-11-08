@@ -96,7 +96,7 @@ export async function consumeSpotifyCallback(
 
   if (store.status !== "authenticating" || returnedState !== store.stateToken) {
     capture("login_failed", { reason: "state_mismatch" });
-    setLoginError("Your sign-in session expired. Please try again.");
+    setLoginError("登录会话已过期，请重试。");
     setAuthStore({ status: "empty" });
     cleanUrl();
     return false;
@@ -120,7 +120,7 @@ export async function consumeSpotifyCallback(
   } catch (error) {
     console.error("Spotify login network error:", error);
     capture("login_failed", { reason: "network_error" });
-    setLoginError("Could not reach Spotify. Check your connection and try again.");
+    setLoginError("无法连接 Spotify，请检查网络后重试。");
     setAuthStore({ status: "empty" });
     cleanUrl();
     return true;
@@ -132,7 +132,7 @@ export async function consumeSpotifyCallback(
       await response.json().catch(() => ({ status: response.status })),
     );
     capture("login_failed", { reason: "rejected" });
-    setLoginError("Spotify rejected the sign-in. Please try again.");
+    setLoginError("Spotify 拒绝了本次登录，请重试。");
     setAuthStore({ status: "empty" });
     cleanUrl();
     return true;
@@ -142,13 +142,13 @@ export async function consumeSpotifyCallback(
   try {
     const value: unknown = await response.json();
     if (!isSpotifyToken(value)) {
-      throw new Error("Spotify returned an invalid token response");
+      throw new Error("Spotify 返回了无效的令牌响应");
     }
     token = { ...value, scope: typeof value === "object" && "scope" in value && typeof value.scope === "string" ? value.scope : undefined };
   } catch (error) {
     console.error("Spotify login response error:", error);
     capture("login_failed", { reason: "invalid_response" });
-    setLoginError("Spotify returned an unexpected sign-in response. Please try again.");
+    setLoginError("Spotify 返回了异常的登录响应，请重试。");
     setAuthStore({ status: "empty" });
     cleanUrl();
     return true;

@@ -96,7 +96,7 @@ async function drain() {
       if (!playlist) {
         update(id, {
           status: "error",
-          error: "This playlist is no longer available.",
+          error: "该播放列表已不可用。",
         });
         continue;
       }

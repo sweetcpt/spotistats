@@ -117,7 +117,7 @@ function LoadFailure(props: {
   return (
     <div class="mt-6 border-4 border-red-800 p-4">
       <p class="text-sm font-black uppercase tracking-[0.2em] text-red-700">
-        {props.rateLimited ? "RATE LIMITED_" : "COULD NOT LOAD_"}
+        {props.rateLimited ? "请求受限_" : "加载失败_"}
       </p>
       <p class="mt-2 text-sm text-red-700">{props.message}</p>
       <button
@@ -125,7 +125,7 @@ function LoadFailure(props: {
         onClick={props.onRetry}
         class="mt-3 border-[3px] border-[#0a0a0a] px-3 py-1.5 text-[0.65rem] font-black uppercase tracking-widest transition hover:bg-[#0a0a0a] hover:text-[#f0ede8]"
       >
-        Retry
+        重试
       </button>
     </div>
   );
@@ -184,7 +184,7 @@ export function FavouritesPage(props: { kind: "tracks" | "albums" }) {
       }
       setLoadError({
         message: rateLimited
-          ? "Spotify is rate limiting this account. Wait a moment, then try again."
+          ? "Spotify 正在对该账号限流，请稍后再试。"
           : errorMessage(error),
         rateLimited,
       });
@@ -401,7 +401,7 @@ export function FavouritesPage(props: { kind: "tracks" | "albums" }) {
     });
   }
 
-  const title = () => (props.kind === "tracks" ? "Top Tracks" : "Saved Albums");
+  const title = () => (props.kind === "tracks" ? "热门曲目" : "收藏的专辑");
 
   return (
     <main class="app-main p-8 md:p-12">
@@ -421,7 +421,7 @@ export function FavouritesPage(props: { kind: "tracks" | "albums" }) {
                   : "text-[#0a0a0a]"
               }`}
             >
-              Tracks
+              曲目
             </a>
             <a
               href="/favourites/albums"
@@ -435,16 +435,16 @@ export function FavouritesPage(props: { kind: "tracks" | "albums" }) {
                   : "text-[#0a0a0a]"
               }`}
             >
-              Albums
+              专辑
             </a>
             <Show when={props.kind === "tracks"}>
               <span class="mx-2 font-black text-[#5c5c5c]">/</span>
               <For
                 each={
                   [
-                    ["short", "Month"],
-                    ["medium", "6 Months"],
-                    ["long", "All Time"],
+                    ["short", "近一个月"],
+                    ["medium", "近 6 个月"],
+                    ["long", "全部时间"],
                   ] as [Range, string][]
                 }
               >
@@ -469,17 +469,17 @@ export function FavouritesPage(props: { kind: "tracks" | "albums" }) {
         }
         hints={
           <>
-            <span>J/↓ Next</span>
-            <span>K/↑ Previous</span>
-            <span>Enter Open</span>
-            <span>T Toggle Type</span>
+            <span>J/↓ 下一项</span>
+            <span>K/↑ 上一项</span>
+            <span>Enter 打开</span>
+            <span>T 切换类型</span>
             <Show when={props.kind === "tracks"}>
-              <span>1/2/3 Range</span>
+              <span>1/2/3 时间范围</span>
             </Show>
           </>
         }
       />
-      <Loading fallback={<p class="text-sm uppercase tracking-widest text-[#5c5c5c]">LOADING_</p>}>
+      <Loading fallback={<p class="text-sm uppercase tracking-widest text-[#5c5c5c]">加载中_</p>}>
         <Show
           when={items().length > 0}
           fallback={
@@ -487,7 +487,7 @@ export function FavouritesPage(props: { kind: "tracks" | "albums" }) {
               when={loadError()}
               fallback={
                 <p class="py-8 text-sm font-bold uppercase tracking-widest text-[#5c5c5c]">
-                  NO FAVOURITES FOUND_
+                  未找到收藏_
                 </p>
               }
             >
@@ -514,7 +514,7 @@ export function FavouritesPage(props: { kind: "tracks" | "albums" }) {
           </For>
           <Show when={loadingMore()}>
             <p class="py-6 text-xs uppercase tracking-[0.2em] text-[#5c5c5c]">
-              LOADING MORE_
+              加载更多_
             </p>
           </Show>
         </Show>
@@ -522,13 +522,13 @@ export function FavouritesPage(props: { kind: "tracks" | "albums" }) {
       <Show when={pagingError()}>
         {(message) => (
           <div class="mt-6 border-4 border-red-800 p-4">
-            <p class="text-sm text-red-700">Loading more failed: {message()}</p>
+            <p class="text-sm text-red-700">加载更多失败：{message()}</p>
             <button
               type="button"
               onClick={() => void loadMore(nextPageOffset())}
               class="mt-3 border-[3px] border-[#0a0a0a] px-3 py-1.5 text-[0.65rem] font-black uppercase tracking-widest transition hover:bg-[#0a0a0a] hover:text-[#f0ede8]"
             >
-              Retry
+              重试
             </button>
           </div>
         )}

@@ -4,7 +4,7 @@ import { HttpApiBuilder } from "effect/http-api";
 
 import { Api } from "~/api";
 
-import { AccountGroupLive } from "./api";
+import { AccountGroupLive, PublicGroupLive } from "./api";
 import { DatabaseLive } from "./db";
 import { SpotifyLive } from "./spotify";
 import { TrackingLive } from "./tracking";
@@ -26,6 +26,7 @@ export const ServicesLive = Layer.mergeAll(
 
 const AppLive = HttpApiBuilder.layer(Api).pipe(
   Layer.provideMerge(AccountGroupLive),
+  Layer.provideMerge(PublicGroupLive),
   Layer.provideMerge(ServicesLive),
   Layer.provideMerge(HttpServer.layerServices),
 );

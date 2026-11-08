@@ -173,7 +173,7 @@ export default function ExportPage() {
   return (
     <main class="app-main p-8 md:p-12">
       <PageHeader
-        title="Export Data"
+        title="导出数据"
         actions={
           <>
             <Show when={selectedPlaylists().length > 0}>
@@ -181,7 +181,7 @@ export default function ExportPage() {
                 onClick={exportSelected}
                 class="font-black text-xs uppercase px-4 py-2 tracking-wide transition border-[3px] border-[#0a0a0a] bg-[#1DB954] hover:bg-[#0a0a0a] hover:text-[#1DB954]"
               >
-                Export selected ({selectedPlaylists().length})
+                导出所选 ({selectedPlaylists().length})
               </button>
             </Show>
             <button
@@ -189,24 +189,24 @@ export default function ExportPage() {
               disabled={backingUp()}
               class="font-black text-xs uppercase px-4 py-2 tracking-wide transition border-[3px] border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#f0ede8] disabled:opacity-50"
             >
-              Backup All <span class="ml-2 text-[0.6rem] opacity-50">B</span> →
+              全部备份 <span class="ml-2 text-[0.6rem] opacity-50">B</span> →
             </button>
           </>
         }
         hints={
           <>
-            <span>J/↓ Next</span>
-            <span>K/↑ Previous</span>
-            <span>Enter Export</span>
-            <span>Space Select</span>
-            <span>E Export Selected</span>
-            <span>B Backup All</span>
+            <span>J/↓ 下一项</span>
+            <span>K/↑ 上一项</span>
+            <span>Enter 导出</span>
+            <span>Space 选择</span>
+            <span>E 导出所选</span>
+            <span>B 全部备份</span>
           </>
         }
       />
       <Show when={backingUp()}>
         <progress
-          aria-label="Backup progress"
+          aria-label="备份进度"
           class="mb-6 h-4 w-full border-[3px] border-[#0a0a0a] accent-[#1DB954]"
           value={backupProgress()}
           max="1"
@@ -215,11 +215,11 @@ export default function ExportPage() {
       <Show when={exportError()}>
         {(error) => (
           <p class="mb-6 border-4 border-red-800 p-4 text-sm text-red-700">
-            Export failed: {error()}
+            导出失败：{error()}
           </p>
         )}
       </Show>
-      <Loading fallback={<p class="text-sm uppercase tracking-widest text-[#5c5c5c]">LOADING_</p>}>
+      <Loading fallback={<p class="text-sm uppercase tracking-widest text-[#5c5c5c]">加载中_</p>}>
         <For each={playlistItems()}>
           {(playlist, index) => {
             const job = () => jobFor(playlist);
@@ -234,7 +234,7 @@ export default function ExportPage() {
                   type="button"
                   role="checkbox"
                   aria-checked={isSelected(playlist) ? "true" : "false"}
-                  aria-label={`Select ${playlist.name}`}
+                  aria-label={`选择 ${playlist.name}`}
                   onClick={() => toggleSelected(playlist)}
                   class={`h-6 w-6 shrink-0 border-[3px] border-current text-center text-xs font-black leading-none ${
                     isSelected(playlist) ? "bg-[#1DB954] text-[#0a0a0a]" : ""
@@ -273,12 +273,12 @@ export default function ExportPage() {
                           </div>
                           <p class="mt-1 text-[0.6rem] uppercase tracking-widest">
                             {value().status === "queued"
-                              ? "Queued_"
+                              ? "排队中_"
                               : value().status === "running"
-                                ? `Exporting ${Math.round(value().progress * 100)}%`
+                                ? `导出中 ${Math.round(value().progress * 100)}%`
                                 : value().status === "done"
-                                  ? "Downloaded"
-                                  : `Failed: ${value().error ?? "unknown error"}`}
+                                  ? "已下载"
+                                  : `失败：${value().error ?? "未知错误"}`}
                           </p>
                         </div>
                       )}
@@ -288,12 +288,12 @@ export default function ExportPage() {
                 <div class="flex shrink-0 gap-2">
                   {playlist.collaborative && (
                     <span class="text-xs uppercase tracking-widest font-bold text-[#5c5c5c]">
-                      Collab
+                      协作
                     </span>
                   )}
                   {!playlist.public && !playlist.collaborative && (
                     <span class="text-xs uppercase tracking-widest font-bold text-[#5c5c5c]">
-                      Private
+                      私密
                     </span>
                   )}
                   <span class="text-xs uppercase tracking-widest font-bold text-[#1DB954]">

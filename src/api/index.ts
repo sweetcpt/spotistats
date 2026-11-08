@@ -249,5 +249,27 @@ export const AccountGroup = HttpApiGroup.make("account").add(
   }),
 );
 
-export const Api = HttpApi.make("spotistats").add(AccountGroup);
+/**
+ * Read-only, session-free view of the instance's listening stats.
+ *
+ * A personal deployment has exactly one tracked account, so the worker can
+ * read its aggregates from D1 without a Spotify bearer token. This is what
+ * lets the statistics page render for visitors who are not signed in.
+ */
+export const PublicGroup = HttpApiGroup.make("public").add(
+  HttpApiEndpoint.get("insights", "/api/public/stats/insights", {
+    query: {
+      tzOffset: Schema.optional(Schema.NumberFromString),
+      range: Schema.optional(InsightsRange),
+      fromMs: Schema.optional(Schema.NumberFromString),
+      toMs: Schema.optional(Schema.NumberFromString),
+    },
+    success: ListeningInsights,
+    error: [HttpApiSchema.status(502)(UpstreamError)] as const,
+  }),
+);
+
+export const Api = HttpApi.make("spotistats")
+  .add(AccountGroup)
+  .add(PublicGroup);
 export type Api = typeof Api;

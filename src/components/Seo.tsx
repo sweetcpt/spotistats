@@ -47,7 +47,7 @@ export function Seo(props: {
       <Meta property="og:image:width" content="1200" />
       <Meta property="og:image:height" content="630" />
       <Meta property="og:image:alt" content={siteImageAlt} />
-      <Meta property="og:locale" content="en_US" />
+      <Meta property="og:locale" content="zh_CN" />
 
       <Meta name="twitter:card" content="summary_large_image" />
       <Meta name="twitter:title" content={props.title} />

@@ -8,9 +8,9 @@ import { SeoContent } from "~/components/SeoContent";
 import { isPublicPath } from "~/lib/seo";
 
 const steps = [
-  "Connect your Spotify account",
-  "Opt in to listening stats",
-  "See the shape of your year",
+  "连接你的 Spotify 账号",
+  "选择开启听歌统计",
+  "看看你这一年的全貌",
 ];
 
 const timeBars = [18, 28, 22, 42, 34, 50, 30, 58, 44, 62, 38, 54, 26, 46, 34, 58];
@@ -31,13 +31,13 @@ function SampleTeaser() {
       <div class="relative grid grid-cols-2 gap-3 xl:block xl:h-full">
         <div class="col-span-2 flex flex-col border-4 border-[#0a0a0a] bg-[#f0ede8] p-4 shadow-[8px_8px_0_#0a0a0a] xl:absolute xl:left-0 xl:top-[2%] xl:h-[34%] xl:w-[58%] xl:-rotate-2">
           <div class="text-[0.6rem] font-black uppercase tracking-[0.2em] text-[#5c5c5c]">
-            Listening time
+            听歌时长
           </div>
           <div class="mt-1 text-4xl font-black leading-none tracking-tighter xl:text-5xl">
             302.1H
           </div>
           <div class="mt-1 text-[0.55rem] uppercase tracking-widest text-[#5c5c5c]">
-            Across 214 active days
+            覆盖 214 个活跃日
           </div>
           <div class="mt-3 flex min-h-12 flex-1 items-end gap-1">
             <For each={timeBars}>
@@ -54,13 +54,13 @@ function SampleTeaser() {
         <div class="col-span-1 flex flex-col justify-between border-4 border-[#0a0a0a] bg-[#1DB954] p-4 shadow-[8px_8px_0_#0a0a0a] xl:absolute xl:left-[51%] xl:top-[17%] xl:h-[27%] xl:w-[43%] xl:rotate-2">
           <div>
             <div class="text-[0.55rem] font-black uppercase tracking-[0.2em]">
-              Top artist
+              最常听的艺人
             </div>
             <div class="mt-1 text-xl font-black uppercase leading-none tracking-tighter xl:text-2xl">
               Aurora Vale
             </div>
             <div class="mt-2 text-[0.6rem] font-black uppercase tracking-widest">
-              412 plays
+              412 次播放
             </div>
           </div>
           <div class="mt-3 hidden h-10 w-10 shrink-0 items-center justify-center self-end rounded-full border-[3px] border-[#0a0a0a] xl:flex">
@@ -70,10 +70,10 @@ function SampleTeaser() {
 
         <div class="col-span-1 flex flex-col border-4 border-[#0a0a0a] bg-[#f0ede8] p-4 shadow-[8px_8px_0_#0a0a0a] xl:absolute xl:left-0 xl:top-[47%] xl:h-[27%] xl:w-[43%] xl:rotate-1">
           <div class="text-[0.55rem] font-black uppercase tracking-[0.2em] text-[#5c5c5c]">
-            Listening streak
+            连续听歌天数
           </div>
           <div class="mt-1 text-2xl font-black leading-none tracking-tighter xl:text-3xl">
-            12 Days
+            12 天
           </div>
           <div class="mt-3 flex gap-1.5">
             <For each={streakDays}>
@@ -90,10 +90,10 @@ function SampleTeaser() {
 
         <div class="col-span-2 flex flex-col border-4 border-[#0a0a0a] bg-[#0a0a0a] p-4 text-[#f0ede8] shadow-[8px_8px_0_#0a0a0a] xl:absolute xl:left-[45%] xl:top-[55%] xl:h-[36%] xl:w-[47%] xl:-rotate-1">
           <div class="text-[0.55rem] font-black uppercase tracking-[0.2em] text-[#1DB954]">
-            When you listen
+            你的听歌时段
           </div>
           <div class="mt-1 text-[0.5rem] uppercase tracking-widest text-[#8a8a8a]">
-            Your local hours
+            按你的本地时间
           </div>
           <div class="mt-3 flex min-h-16 flex-1 items-end gap-0.5 xl:gap-1">
             <For each={hourBars}>
@@ -147,7 +147,7 @@ export default function LoginPage() {
           SPOTISTATS
         </span>
         <span class="hidden text-[0.65rem] uppercase tracking-[0.2em] text-[#5c5c5c] sm:block">
-          Created by{" "}
+          作者{" "}
           <a
             href="https://github.com/oscartbeaumont/spotistats"
             target="_blank"
@@ -165,20 +165,18 @@ export default function LoginPage() {
             <div class="flex items-center gap-2.5">
               <span class="h-2.5 w-2.5 bg-[#1DB954]" />
               <span class="text-[0.65rem] uppercase tracking-[0.25em] text-[#5c5c5c]">
-                Your Spotify, decoded
+                解读你的 Spotify
               </span>
             </div>
 
             <h1 class="mt-5 text-6xl font-black uppercase leading-[0.88] tracking-[-0.055em] sm:text-7xl xl:text-[88px]">
-              <span class="block">Listen.</span>
-              <span class="block">Learn.</span>
-              <span class="block">Repeat.</span>
+              <span class="block">听。</span>
+              <span class="block">读懂。</span>
+              <span class="block">循环。</span>
             </h1>
 
             <p class="mt-6 max-w-[470px] text-sm leading-7 text-[#555]">
-              Spotify only shows you the last few plays. Spotistats keeps the
-              long view, then turns it into streaks, top artists, and the shape
-              of your year.
+              Spotify 只会给你看最近几次播放。Spotistats 会替你留住更长的记录，再把它变成连续天数、常听艺人，以及你这一年的全貌。
             </p>
 
             <Show when={loginError()}>
@@ -186,13 +184,13 @@ export default function LoginPage() {
                 role="alert"
                 class="mt-6 max-w-[540px] whitespace-pre-wrap break-words border-4 border-[#0a0a0a] bg-[#0a0a0a] p-3 text-xs font-bold text-red-500"
               >
-                Sign-in failed: {loginError()}
+                登录失败：{loginError()}
               </pre>
             </Show>
 
             <div class="mt-7 w-full max-w-[540px] border-4 border-[#0a0a0a] bg-[#f0ede8] p-5 shadow-[8px_8px_0_#0a0a0a]">
               <div class="text-[0.6rem] font-black uppercase tracking-[0.2em] text-[#5c5c5c]">
-                Three steps to your stats
+                三步开启你的听歌统计
               </div>
               <ol class="mt-4 space-y-3">
                 <For each={steps}>
@@ -218,19 +216,19 @@ export default function LoginPage() {
                 onClick={() => void signIn()}
                 class="mt-5 flex w-full items-center justify-center gap-3 border-4 border-[#0a0a0a] bg-[#1DB954] px-4 py-3 text-xs font-black uppercase tracking-widest transition hover:bg-[#0a0a0a] hover:text-[#1DB954] disabled:opacity-60"
               >
-                {signingIn() ? "CONNECTING_" : "CONNECT SPOTIFY"}
+                {signingIn() ? "连接中_" : "连接 Spotify"}
                 <span aria-hidden="true">→</span>
               </button>
               <p class="mt-3 text-[0.6rem] leading-5 text-[#5c5c5c]">
-                Stats sync is opt-in. Delete your history whenever you want.
+                统计同步由你选择开启，历史记录随时都能删除。
               </p>
               <p class="mt-2 text-[0.6rem] leading-5 text-[#5c5c5c]">
                 <a href="/privacy" class="underline hover:text-[#0a0a0a]">
-                  Privacy
+                  隐私
                 </a>
                 {" · "}
                 <a href="/security" class="underline hover:text-[#0a0a0a]">
-                  Security
+                  安全
                 </a>
               </p>
             </div>

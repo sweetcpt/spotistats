@@ -116,7 +116,7 @@ describe("private playlist writes", () => {
     await expect(saveDiscoveryPlaylist(draft(), () => {})).rejects.toThrow();
     const persisted = readDiscoveryDraft()!;
     expect(persisted.stage).toBe("creating");
-    await expect(saveDiscoveryPlaylist(persisted, () => {})).rejects.toThrow("may have created");
+    await expect(saveDiscoveryPlaylist(persisted, () => {})).rejects.toThrow("可能已经创建");
     expect(fetch.mock.calls.filter(([input]) => input.endsWith("/playlists"))).toHaveLength(1);
   });
 
@@ -144,7 +144,7 @@ describe("private playlist writes", () => {
   it("refuses to save another account's draft", async () => {
     const fetch = vi.fn(async () => Response.json({ ...profile, id: "other" }));
     vi.stubGlobal("fetch", fetch);
-    await expect(saveDiscoveryPlaylist(draft(), () => {})).rejects.toThrow("different Spotify account");
+    await expect(saveDiscoveryPlaylist(draft(), () => {})).rejects.toThrow("另一个 Spotify 账号");
     expect(fetch).toHaveBeenCalledTimes(1);
   });
 
@@ -154,7 +154,7 @@ describe("private playlist writes", () => {
       return Response.json(profile);
     });
     vi.stubGlobal("fetch", fetch);
-    await expect(saveDiscoveryPlaylist(draft(), () => {})).rejects.toThrow("session changed");
+    await expect(saveDiscoveryPlaylist(draft(), () => {})).rejects.toThrow("会话已变化");
     expect(authStore()).toMatchObject({ accessToken: "Bearer other" });
     expect(fetch).toHaveBeenCalledTimes(1);
   });

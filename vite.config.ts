@@ -12,6 +12,8 @@ import { defineConfig, type Plugin } from "vite";
 process.env.VITE_SPOTIFY_CLIENT_ID ??= "";
 process.env.VITE_SITE_URL ??= "";
 process.env.VITE_POSTHOG_KEY ??= "";
+// Read-only statistics without signing in. Set to "false" to require login.
+process.env.VITE_PUBLIC_STATS ??= "true";
 
 /**
  * `cf build` runs the Solid client build twice: an early client build, the

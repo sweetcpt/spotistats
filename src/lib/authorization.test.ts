@@ -72,15 +72,15 @@ describe("isClientCredentialFailure", () => {
 
 describe("reauthMessage", () => {
   it("explains the six-month expiry", () => {
-    expect(reauthMessage('{"error":"invalid_grant"}')).toContain("six months");
+    expect(reauthMessage('{"error":"invalid_grant"}')).toContain("六个月");
   });
 
   it("does not claim a lapsed authorization for invalid_client", () => {
-    expect(reauthMessage('{"error":"invalid_client"}')).not.toContain("Reconnect");
+    expect(reauthMessage('{"error":"invalid_client"}')).not.toContain("重新连接");
   });
 
   it("falls back to a generic explanation", () => {
-    expect(reauthMessage("Bad Request")).toContain("Reconnect Spotify stats");
-    expect(reauthMessage()).toContain("Reconnect Spotify stats");
+    expect(reauthMessage("Bad Request")).toContain("重新连接");
+    expect(reauthMessage()).toContain("重新连接");
   });
 });

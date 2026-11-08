@@ -20,10 +20,10 @@ export function isPostHogPath(pathname: string): boolean {
 
 export function proxyPostHog(request: Request): Promise<Response> {
   if (!env.VITE_POSTHOG_KEY) {
-    return Promise.resolve(new Response("Not Found", { status: 404 }));
+    return Promise.resolve(new Response("未找到", { status: 404 }));
   }
   if (!allowedMethods.has(request.method)) {
-    return Promise.resolve(new Response("Method Not Allowed", { status: 405 }));
+    return Promise.resolve(new Response("请求方法不允许", { status: 405 }));
   }
 
   const url = new URL(request.url);

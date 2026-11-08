@@ -11,12 +11,16 @@ import { discoveryEnabled } from "~/client/features";
 import { authReady, authStore } from "~/client/storage";
 import { isContentPath, isPublicPath, titleForPath } from "~/lib/seo";
 import LoginPage from "~/pages/Login";
+import PublicStatsPage from "~/pages/PublicStats";
 import { createShortcut, isEditableShortcutTarget } from "~/lib/shortcut";
+
+/** Set VITE_PUBLIC_STATS=false at build time to require sign-in again. */
+const publicStatsEnabled = import.meta.env.VITE_PUBLIC_STATS !== "false";
 
 function LoadingScreen() {
   return (
     <main class="app-main p-8 md:p-16 text-sm uppercase tracking-widest text-[#5c5c5c]">
-      LOADING_
+      加载中…
     </main>
   );
 }
@@ -109,8 +113,15 @@ export function RootLayout(props: {
       <Show
       when={authStore().status === "authenticated"}
       fallback={
-        <Show when={contentPage()} fallback={<LoginPage />}>
-          {props.children}
+        <Show
+          when={publicStatsEnabled && location.pathname === "/"}
+          fallback={
+            <Show when={contentPage()} fallback={<LoginPage />}>
+              {props.children}
+            </Show>
+          }
+        >
+          <PublicStatsPage />
         </Show>
       }
     >
@@ -121,20 +132,20 @@ export function RootLayout(props: {
           </span>
           <nav class="order-3 flex w-full basis-full items-center gap-0 overflow-x-auto sm:order-none sm:w-auto sm:basis-auto sm:grow sm:justify-center">
             <a href="/" class={linkClass("/")}>
-              Profile <span class="ml-2 hidden text-[0.6rem] opacity-50 md:inline">Alt+1</span>
+              我的统计 <span class="ml-2 hidden text-[0.6rem] opacity-50 md:inline">Alt+1</span>
             </a>
             <a href="/favourites/tracks" class={linkClass("/favourites/tracks")}>
-              Favourites <span class="ml-2 hidden text-[0.6rem] opacity-50 md:inline">Alt+2</span>
+              收藏 <span class="ml-2 hidden text-[0.6rem] opacity-50 md:inline">Alt+2</span>
             </a>
             <a href="/export" class={linkClass("/export")}>
-              Export Data <span class="ml-2 hidden text-[0.6rem] opacity-50 md:inline">Alt+3</span>
+              导出数据 <span class="ml-2 hidden text-[0.6rem] opacity-50 md:inline">Alt+3</span>
             </a>
             <a href="/account" class={linkClass("/account")}>
-              Account <span class="ml-2 hidden text-[0.6rem] opacity-50 md:inline">Alt+4</span>
+              账户 <span class="ml-2 hidden text-[0.6rem] opacity-50 md:inline">Alt+4</span>
             </a>
             <Show when={discoveryEnabled()}>
               <a href="/discover" class={linkClass("/discover")}>
-                Discover <span class="ml-2 hidden text-[0.6rem] opacity-50 md:inline">Alt+5</span>
+                发现 <span class="ml-2 hidden text-[0.6rem] opacity-50 md:inline">Alt+5</span>
               </a>
             </Show>
           </nav>
@@ -145,7 +156,7 @@ export function RootLayout(props: {
             }}
             class="shrink-0 text-xs uppercase tracking-widest font-bold text-[#5c5c5c] transition hover:underline"
           >
-            Logout
+            退出登录
           </button>
         </header>
         <Errored fallback={(error, reset) => <AppError error={error()} reset={reset} />}>

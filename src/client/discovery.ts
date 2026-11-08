@@ -27,7 +27,7 @@ const candidate = (track: CatalogTrack & { id: string }, source: "new" | "redisc
 
 const currentToken = () => {
   const store = authStore();
-  if (store.status !== "authenticated") throw new Error("Sign in to Spotify first.");
+  if (store.status !== "authenticated") throw new Error("请先登录 Spotify。");
   return store.accessToken;
 };
 
@@ -41,7 +41,7 @@ export async function generateDiscovery(mode: DiscoveryMode, mood: Mood) {
   let fresh: DiscoveryCandidate[] = [];
   const old: DiscoveryCandidate[] = [];
   if (mode !== "rediscover") {
-    if (!seeds.length) throw new Error("Spotify has no top tracks to seed discovery yet. Listen to some music and try again.");
+    if (!seeds.length) throw new Error("Spotify 还没有可用于生成推荐的热门曲目，先听几首歌再试。");
     const recommendations = await runSpotify(getRecommendations(seeds, moodAttributes[mood]));
     const tracks = recommendations.tracks.slice(0, 100).filter(usable);
     const ids = [...new Set(tracks.flatMap((track) => [track.id, ...(track.linked_from ? [track.linked_from.id] : [])]))];
@@ -49,20 +49,20 @@ export async function generateDiscovery(mode: DiscoveryMode, mood: Mood) {
     for (let offset = 0; offset < ids.length; offset += 50) {
       const batch = ids.slice(offset, offset + 50);
       const flags = await runSpotify(getSavedTrackFlags(batch));
-      if (flags.length !== batch.length) throw new Error("Spotify returned an incomplete library check. Please try again.");
+      if (flags.length !== batch.length) throw new Error("Spotify 返回的收藏检查结果不完整，请重试。");
       flags.forEach((saved, index) => { if (saved) known.add(batch[index]!); });
     }
     fresh = tracks.filter((track) => !known.has(track.id) && !known.has(track.linked_from?.id ?? ""))
-      .map((track) => candidate(track, "new", "Spotify recommendation based on your favourites; absent from your tracked history and liked songs."));
+      .map((track) => candidate(track, "new", "根据你的收藏生成的 Spotify 推荐；未出现在已记录的播放记录和喜欢的歌曲中。"));
   }
   if (mode !== "new" && history.rediscovery.length) {
     const features = mood === "any" ? null : await runSpotify(getAudioFeatures(history.rediscovery.map((track) => track.id).join(",")));
-    if (features && features.length !== history.rediscovery.length) throw new Error("Spotify returned incomplete audio features. Please try again.");
+    if (features && features.length !== history.rediscovery.length) throw new Error("Spotify 返回的音频特征不完整，请重试。");
     const eligible = history.rediscovery.filter((_, index) => matchesMood(mood, features?.[index]));
     for (let offset = 0; offset < eligible.length; offset += 50) {
       const batch = eligible.slice(offset, offset + 50);
       const catalog = await runSpotify(getCatalogTracks(batch.map((track) => track.id)));
-      if (catalog.tracks.length !== batch.length) throw new Error("Spotify returned an incomplete track lookup. Please try again.");
+      if (catalog.tracks.length !== batch.length) throw new Error("Spotify 返回的曲目信息不完整，请重试。");
       catalog.tracks.forEach((track, index) => {
         const previous = batch[index];
         if (!previous || !usable(track)) return;
@@ -70,7 +70,7 @@ export async function generateDiscovery(mode: DiscoveryMode, mood: Mood) {
       });
     }
   }
-  if (currentToken() !== token) throw new Error("Your Spotify session changed. Generate a new selection.");
+  if (currentToken() !== token) throw new Error("你的 Spotify 会话已变化，请重新生成推荐。");
   return { ownerId: profile.id, tracks: selectDiscoveryTracks(fresh, old, mode) };
 }
 
@@ -103,33 +103,33 @@ export function clearDiscoveryDraft() {
 export async function saveDiscoveryPlaylist(draft: DiscoveryDraft, update: (draft: DiscoveryDraft) => void) {
   const token = currentToken();
   const profile = await runSpotify(getProfile());
-  if (currentToken() !== token) throw new Error("Your Spotify session changed. Reopen discovery before retrying.");
-  if (profile.id !== draft.ownerId) throw new Error("This selection belongs to a different Spotify account. Generate a new one.");
-  if (!draft.tracks.length) throw new Error("Select at least one track.");
-  if (draft.stage === "creating") throw new Error("Spotify may have created the playlist, but its response was lost. Check your Spotify playlists before starting over.");
+  if (currentToken() !== token) throw new Error("你的 Spotify 会话已变化，请重新打开「发现」后再试。");
+  if (profile.id !== draft.ownerId) throw new Error("这批推荐属于另一个 Spotify 账号，请重新生成。");
+  if (!draft.tracks.length) throw new Error("请至少选择一首曲目。");
+  if (draft.stage === "creating") throw new Error("Spotify 可能已经创建了播放列表，但响应丢失了。重新开始之前，请先到 Spotify 里确认。");
   if (draft.stage === "saved") return;
   const persist = (next: DiscoveryDraft) => { writeDiscoveryDraft(next); update(next); return next; };
   if (!draft.playlist) {
     draft = persist({ ...draft, stage: "creating" });
     // Never retry this POST: Spotify may have created it even if the response was lost.
-    const playlist = await runSpotify(createPrivatePlaylist(draft.name.trim() || "Spotistats discovery"));
-    if (currentToken() !== token) throw new Error("Your Spotify session changed. Check Spotify for the playlist before starting over.");
+    const playlist = await runSpotify(createPrivatePlaylist(draft.name.trim() || "Spotistats 发现"));
+    if (currentToken() !== token) throw new Error("你的 Spotify 会话已变化，重新开始之前请先到 Spotify 里确认播放列表。");
     draft = { ...draft, playlist, stage: "filling" };
     // Keep the returned ID in memory even if storage fills after creation.
     update(draft);
     writeDiscoveryDraft(draft);
   }
-  if (currentToken() !== token) throw new Error("Your Spotify session changed. Reopen discovery before retrying.");
+  if (currentToken() !== token) throw new Error("你的 Spotify 会话已变化，请重新打开「发现」后再试。");
   await runSpotify(setDiscoveryPlaylistTracks(draft.playlist!.id, draft.tracks.map((track) => track.id)));
-  if (currentToken() !== token) throw new Error("Your Spotify session changed. Check Spotify for the saved playlist.");
+  if (currentToken() !== token) throw new Error("你的 Spotify 会话已变化，请到 Spotify 里确认已保存的播放列表。");
   persist({ ...draft, stage: "saved" });
 }
 
 export function discoveryError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error);
   if (message.includes("403") || message.includes("404")) {
-    return "Spotify denied this operation. Recommendations and audio features are restricted for some apps. If saving, reconnect with playlist permission. No substitute results were generated.";
+    return "Spotify 拒绝了此操作。部分应用的推荐与音频特征接口受限。若是保存操作，请重新以播放列表权限授权。系统不会生成替代结果。";
   }
-  if (message.includes("429")) return "Spotify is rate limiting requests. Wait a little before trying again.";
+  if (message.includes("429")) return "Spotify 正在限制请求频率，请稍后再试。";
   return message;
 }

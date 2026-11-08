@@ -102,13 +102,13 @@ function ProfileHeader(props: { user: ProfileUser }) {
         >
           <img
             src={props.user.images?.[0]?.url ?? "/assets/placeholder.svg"}
-            alt={props.user.display_name ?? "Profile"}
+            alt={props.user.display_name ?? "头像"}
             class="h-24 w-24 border-4 border-[#0a0a0a] object-cover md:h-28 md:w-28"
           />
         </a>
         <div class="min-w-0 flex-1">
           <div class="mb-1 text-[0.65rem] uppercase tracking-[0.25em] text-[#5c5c5c]">
-            Your profile
+            你的个人资料
           </div>
           <h1 class="text-4xl font-black uppercase leading-none tracking-tighter md:text-5xl">
             {props.user.display_name ?? props.user.id}
@@ -121,7 +121,7 @@ function ProfileHeader(props: { user: ProfileUser }) {
               {props.user.followers.total.toLocaleString()}
             </span>
             <span class="text-[0.65rem] uppercase tracking-widest text-[#666]">
-              followers
+              关注者
             </span>
           </div>
         </div>
@@ -130,7 +130,7 @@ function ProfileHeader(props: { user: ProfileUser }) {
             href="/favourites/tracks"
             class="border-[3px] border-[#0a0a0a] px-4 py-2 text-[0.65rem] font-black uppercase tracking-widest transition hover:bg-[#1DB954] hover:text-black"
           >
-            Top Music →
+            常听音乐 →
           </a>
           <a
             href={externalHref(props.user.external_urls.spotify)}
@@ -138,7 +138,7 @@ function ProfileHeader(props: { user: ProfileUser }) {
             rel="noopener"
             class="border-[3px] border-[#0a0a0a] px-4 py-2 text-[0.65rem] font-black uppercase tracking-widest transition hover:bg-[#0a0a0a] hover:text-[#f0ede8]"
           >
-            Open Spotify ↗
+            打开 Spotify ↗
           </a>
         </div>
       </div>
@@ -157,12 +157,12 @@ function StatsRail(props: {
         <div class="mb-4 flex items-start justify-between gap-3">
           <div>
             <div class="text-xs uppercase tracking-[0.2em] text-[#5c5c5c]">
-              Recently Listened
+              最近收听
             </div>
             <p class="mt-1 text-[0.6rem] uppercase tracking-widest text-[#666]">
               {props.status.lastSuccessAt
-                ? `Synced ${formatDate(props.status.lastSuccessAt)}`
-                : "Spotify stats"}
+                ? `同步于 ${formatDate(props.status.lastSuccessAt)}`
+                : "Spotify 统计"}
             </p>
           </div>
           <button
@@ -170,9 +170,9 @@ function StatsRail(props: {
             disabled={props.refreshing || !props.status.enabled}
             onClick={props.onRefresh}
             class="shrink-0 border-[3px] border-[#0a0a0a] px-2 py-1.5 text-[0.6rem] font-black uppercase tracking-widest transition disabled:opacity-40 hover:bg-[#0a0a0a] hover:text-[#f0ede8]"
-            title="Shortcut: R"
+            title="快捷键：R"
           >
-            {props.refreshing ? "Queued_" : "Refresh (R)"}
+            {props.refreshing ? "排队中_" : "刷新 (R)"}
           </button>
         </div>
         <Show
@@ -180,16 +180,16 @@ function StatsRail(props: {
           fallback={
             <div class="border-[3px] border-dashed border-[#0a0a0a] p-4">
               <p class="text-xs font-black uppercase tracking-tight">
-                Stats are off
+                统计未开启
               </p>
               <p class="mt-2 text-xs leading-6 text-[#555]">
-                Connect stats to keep recent plays here.
+                连接统计后，最近的播放记录会显示在这里。
               </p>
               <a
                 href="/account"
                 class="mt-3 inline-block text-[0.65rem] font-black uppercase tracking-widest underline"
               >
-                Connect stats →
+                连接统计 →
               </a>
             </div>
           }
@@ -199,11 +199,11 @@ function StatsRail(props: {
             fallback={
               <div class="border-[3px] border-dashed border-[#0a0a0a] p-4">
                 <p class="text-xs font-black uppercase tracking-tight">
-                  No listening data yet
+                  暂无收听数据
                 </p>
                 <p class="mt-2 text-xs leading-6 text-[#555]">
-                  Use Refresh to queue a sync, then this list will update when
-                  Spotify returns recent plays.
+                  点击「刷新」发起同步，等 Spotify 返回最近播放记录后，
+                  这里就会更新。
                 </p>
               </div>
             }
@@ -250,7 +250,7 @@ function StatsRail(props: {
       <section class="border-4 border-[#0a0a0a] p-5">
         <div class="mb-3 flex items-center justify-between gap-3">
           <div class="text-xs uppercase tracking-[0.2em] text-[#5c5c5c]">
-            Stats Sync
+            统计同步
           </div>
           <span
             class={`border-[3px] border-[#0a0a0a] px-2 py-1 text-[0.6rem] font-black uppercase tracking-widest ${
@@ -259,32 +259,32 @@ function StatsRail(props: {
                 : "bg-[#0a0a0a] text-[#f0ede8]"
             }`}
           >
-            {props.status.enabled ? "On" : "Off"}
+            {props.status.enabled ? "开启" : "关闭"}
           </span>
         </div>
         <Show
           when={props.status.enabled}
           fallback={
             <p class="text-xs leading-6 text-[#555]">
-              Turn on stats to keep a history Spotify does not expose.
+              开启统计，才能留存 Spotify 未公开的收听历史。
             </p>
           }
         >
           <dl class="space-y-2 text-[0.6rem] uppercase tracking-widest text-[#666]">
             <div class="flex items-baseline justify-between gap-2">
-              <dt>Last sync</dt>
+              <dt>上次同步</dt>
               <dd class="text-right font-bold text-[#0a0a0a]">
                 {formatDate(props.status.lastSuccessAt)}
               </dd>
             </div>
             <div class="flex items-baseline justify-between gap-2">
-              <dt>Newest listen</dt>
+              <dt>最近一次播放</dt>
               <dd class="text-right font-bold text-[#0a0a0a]">
                 {formatDate(props.status.lastPlayedAtMs)}
               </dd>
             </div>
             <div class="flex items-baseline justify-between gap-2">
-              <dt>Listens tracked</dt>
+              <dt>累计播放次数</dt>
               <dd class="text-right font-bold text-[#0a0a0a]">
                 {props.status.listenCount.toLocaleString()}
               </dd>
@@ -300,7 +300,7 @@ function StatsRail(props: {
           href="/account"
           class="mt-3 inline-block text-[0.65rem] font-black uppercase tracking-widest underline"
         >
-          Manage stats →
+          管理统计 →
         </a>
       </section>
     </div>
@@ -308,11 +308,11 @@ function StatsRail(props: {
 }
 
 const rangeOptions: ReadonlyArray<{ value: InsightsRange; label: string }> = [
-  { value: "week", label: "7D" },
-  { value: "month", label: "30D" },
-  { value: "sixMonths", label: "6M" },
-  { value: "all", label: "ALL" },
-  { value: "custom", label: "CUSTOM" },
+  { value: "week", label: "近7天" },
+  { value: "month", label: "近30天" },
+  { value: "sixMonths", label: "近6个月" },
+  { value: "all", label: "全部" },
+  { value: "custom", label: "自定义" },
 ];
 
 function InsightsRangeControl(props: {
@@ -327,7 +327,7 @@ function InsightsRangeControl(props: {
   return (
     <div class="flex flex-wrap items-center gap-2">
       <span class="mr-1 text-[0.6rem] font-black uppercase tracking-[0.2em] text-[#5c5c5c]">
-        Range
+        时间范围
       </span>
       <For each={rangeOptions}>
         {(option) => (
@@ -347,7 +347,7 @@ function InsightsRangeControl(props: {
       </For>
       <Show when={props.value === "custom"}>
         <label class="flex items-center gap-2 border-[3px] border-[#0a0a0a] px-2 py-1 text-[0.55rem] font-black uppercase tracking-widest text-[#5c5c5c]">
-          From
+          起始
           <input
             type="date"
             value={props.fromDate}
@@ -357,7 +357,7 @@ function InsightsRangeControl(props: {
           />
         </label>
         <label class="flex items-center gap-2 border-[3px] border-[#0a0a0a] px-2 py-1 text-[0.55rem] font-black uppercase tracking-widest text-[#5c5c5c]">
-          To
+          结束
           <input
             type="date"
             value={props.toDate}
@@ -369,7 +369,7 @@ function InsightsRangeControl(props: {
       </Show>
       <Show when={props.updating}>
         <span class="text-[0.6rem] font-black uppercase tracking-widest text-[#5c5c5c]">
-          Updating_
+          更新中_
         </span>
       </Show>
     </div>
@@ -493,17 +493,17 @@ export default function ProfilePage() {
   const rangeLabel = () => {
     switch (range()) {
       case "week":
-        return "Last 7 days";
+        return "近 7 天";
       case "month":
-        return "Last 30 days";
+        return "近 30 天";
       case "sixMonths":
-        return "Last 6 months";
+        return "近 6 个月";
       case "custom":
         return fromDate() && toDate()
           ? `${formatDay(fromDate())} – ${formatDay(toDate())}`
-          : "Custom range";
+          : "自定义范围";
       default:
-        return "All time";
+        return "全部时间";
     }
   };
 
@@ -605,7 +605,7 @@ export default function ProfilePage() {
               />
               <div class="min-w-0 flex-1">
                 <div class="mb-1 text-[0.65rem] font-black uppercase tracking-[0.25em]">
-                  Playing Now
+                  正在播放
                 </div>
                 <p class="truncate text-xl font-black uppercase tracking-tight md:text-2xl">
                   {track().name}
@@ -617,7 +617,7 @@ export default function ProfilePage() {
                 </p>
               </div>
               <span class="hidden shrink-0 border-[3px] border-[#0a0a0a] px-3 py-2 text-xs font-black uppercase tracking-widest transition group-hover:bg-[#0a0a0a] group-hover:text-[#1DB954] md:inline-block">
-                Open Spotify →
+                打开 Spotify →
               </span>
             </a>
           )}
@@ -647,7 +647,7 @@ export default function ProfilePage() {
                   <ListeningInsights
                     data={data()}
                     onReload={reloadInsights}
-                    rangeLabel="Sample data"
+                    rangeLabel="示例数据"
                     preview
                     onExitPreview={exitPreview}
                   />
@@ -663,7 +663,7 @@ export default function ProfilePage() {
                       <InsightsUnavailable
                         message={
                           ready().state.error ??
-                          "Insights could not be loaded. Try again."
+                          "收听洞察加载失败，请重试。"
                         }
                         onRetry={reloadInsights}
                         onPreview={showPreview}
@@ -726,37 +726,37 @@ function InsightsGate(props: {
       class="scroll-mt-28 border-4 border-[#0a0a0a] p-6 md:p-8"
     >
       <div class="mb-2 text-xs uppercase tracking-[0.25em] text-[#5c5c5c]">
-        Listening Insights
+        收听洞察
       </div>
       <h2 class="max-w-3xl text-3xl font-black uppercase leading-none tracking-tighter md:text-5xl">
         {props.status.enabled
-          ? "Your first listens are on the way"
-          : "See what your listening says about you"}
+          ? "你的首批播放记录正在路上"
+          : "看看你的收听习惯说明了什么"}
       </h2>
       <p class="mt-4 max-w-2xl text-sm leading-7 text-[#555]">
         {props.status.enabled
-          ? "Stats sync is on. Spotify's recent-play window lands shortly, then this page will fill in on its own."
-          : "Spotistats can only graph the plays you choose to store. Connect listening stats to build a history Spotify does not keep, or preview the overview with sample data first."}
+          ? "统计同步已开启。Spotify 的最近播放记录稍后就会同步过来，页面届时会自动填充。"
+          : "Spotistats 只会绘制你选择保存的播放记录。连接收听统计，就能积累一份 Spotify 不会保留的历史；也可以先用示例数据预览概览。"}
       </p>
       <div class="mt-6 grid gap-3 sm:grid-cols-3">
         <div class="border-[3px] border-[#0a0a0a] p-4">
           <p class="text-xs font-black uppercase tracking-widest">
-            Top artists & tracks
+            常听艺人与曲目
           </p>
           <p class="mt-2 text-xs leading-6 text-[#5c5c5c]">
-            All-time favourites, not just Spotify's last 50 plays.
-          </p>
-        </div>
-        <div class="border-[3px] border-[#0a0a0a] p-4">
-          <p class="text-xs font-black uppercase tracking-widest">When you listen</p>
-          <p class="mt-2 text-xs leading-6 text-[#5c5c5c]">
-            Your local hours, weekdays and the shape of the last year.
+            全部时间里的心头好，而不只是 Spotify 最近 50 次播放。
           </p>
         </div>
         <div class="border-[3px] border-[#0a0a0a] p-4">
-          <p class="text-xs font-black uppercase tracking-widest">Streaks & quirks</p>
+          <p class="text-xs font-black uppercase tracking-widest">收听时段</p>
           <p class="mt-2 text-xs leading-6 text-[#5c5c5c]">
-            Listening streaks, long-tail tracks and your night-owl share.
+            你的本地时段、星期分布，以及过去一年的整体轮廓。
+          </p>
+        </div>
+        <div class="border-[3px] border-[#0a0a0a] p-4">
+          <p class="text-xs font-black uppercase tracking-widest">连续天数与趣味数据</p>
+          <p class="mt-2 text-xs leading-6 text-[#5c5c5c]">
+            连续收听天数、长尾曲目，以及你的夜猫比例。
           </p>
         </div>
       </div>
@@ -775,7 +775,7 @@ function InsightsGate(props: {
               href="/account"
               class="border-4 border-[#0a0a0a] bg-[#0a0a0a] px-6 py-3 text-sm font-black uppercase tracking-wide text-[#f0ede8] transition hover:bg-[#1DB954] hover:text-black"
             >
-              Connect listening stats →
+              连接收听统计 →
             </a>
           }
         >
@@ -785,7 +785,7 @@ function InsightsGate(props: {
             onClick={props.onRefresh}
             class="border-4 border-[#0a0a0a] px-6 py-3 text-sm font-black uppercase tracking-wide transition disabled:opacity-50 hover:bg-[#0a0a0a] hover:text-[#f0ede8]"
           >
-            {props.refreshing ? "Refreshing_" : "Refresh now"}
+            {props.refreshing ? "刷新中_" : "立即刷新"}
           </button>
         </Show>
         <button
@@ -793,7 +793,7 @@ function InsightsGate(props: {
           onClick={props.onPreview}
           class="border-4 border-[#0a0a0a] bg-[#1DB954] px-6 py-3 text-sm font-black uppercase tracking-wide transition hover:bg-[#0a0a0a] hover:text-[#1DB954]"
         >
-          Preview with sample data →
+          用示例数据预览 →
         </button>
       </div>
     </section>
@@ -811,10 +811,10 @@ function InsightsUnavailable(props: {
       class="scroll-mt-28 border-4 border-red-800 p-6 md:p-8"
     >
       <div class="mb-2 text-xs uppercase tracking-[0.2em] text-red-700">
-        Listening Insights
+        收听洞察
       </div>
       <h2 class="text-2xl font-black uppercase leading-none tracking-tighter">
-        Could not load your insights
+        无法加载你的收听洞察
       </h2>
       <p class="mt-3 max-w-2xl text-sm leading-7 text-[#555]">{props.message}</p>
       <div class="mt-5 flex flex-wrap gap-3">
@@ -823,14 +823,14 @@ function InsightsUnavailable(props: {
           onClick={props.onRetry}
           class="border-4 border-[#0a0a0a] px-6 py-3 text-sm font-black uppercase tracking-wide transition hover:bg-[#0a0a0a] hover:text-[#f0ede8]"
         >
-          Try again
+          重试
         </button>
         <button
           type="button"
           onClick={props.onPreview}
           class="border-4 border-[#0a0a0a] bg-[#1DB954] px-6 py-3 text-sm font-black uppercase tracking-wide transition hover:bg-[#0a0a0a] hover:text-[#1DB954]"
         >
-          Preview with sample data →
+          用示例数据预览 →
         </button>
       </div>
     </section>

@@ -98,7 +98,7 @@ function BucketChart(props: {
             <div
               class="group relative flex-1"
               style={`height:${Math.max(2, (count / max()) * 100)}%`}
-              title={`${props.labels(index())}: ${count.toLocaleString()}`}
+              title={`${props.labels(index())}：${count.toLocaleString()}`}
               aria-hidden="true"
             >
               <div
@@ -150,7 +150,7 @@ function TimeVsPlaysChart(props: {
               <div
                 class="relative flex-1"
                 style={`height:${Math.max(2, (bucket.listens / maxListens()) * 100)}%`}
-                title={`${props.labels(index())}: ${bucket.listens.toLocaleString()} plays, ${formatListeningTime(bucket.listeningMs)}`}
+                title={`${props.labels(index())}：${bucket.listens.toLocaleString()} 次播放，${formatListeningTime(bucket.listeningMs)}`}
                 aria-hidden="true"
               >
                 <div
@@ -213,7 +213,7 @@ function InsightsContent(props: { data: ListeningInsightsData }) {
     props.data.totals.activeDays === 0
       ? 0
       : Math.round(props.data.totals.listens / props.data.totals.activeDays);
-  const trendUnitLabel = () => (props.data.trendUnit === "day" ? "day" : "month");
+  const trendUnitLabel = () => (props.data.trendUnit === "day" ? "天" : "月");
   const averageTrackTime = () =>
     props.data.totals.listens === 0
       ? "—"
@@ -225,36 +225,36 @@ function InsightsContent(props: { data: ListeningInsightsData }) {
     <div class="space-y-10">
       <section class="grid gap-4 sm:grid-cols-2">
         <StatCard
-          label="Listens tracked"
+          label="累计播放次数"
           value={<AnimatedNumber value={props.data.totals.listens} />}
-          detail={`Across ${props.data.totals.activeDays.toLocaleString()} active days — about ${averagePerDay()} a day.`}
+          detail={`累计 ${props.data.totals.activeDays.toLocaleString()} 个活跃天数，平均每天约 ${averagePerDay()} 次播放。`}
           delay={0}
           accent
         />
         <StatCard
-          label="Time with music"
+          label="收听时长"
           value={
             <AnimatedNumber
               value={listeningHours(props.data.totals.listeningMs)}
-              format={(value) => `${value.toFixed(1)}h`}
+              format={(value) => `${value.toFixed(1)}小时`}
             />
           }
-          detail={`${formatListeningTime(props.data.totals.listeningMs)} of tracks, counted at full length — skips included.`}
+          detail={`${formatListeningTime(props.data.totals.listeningMs)} 的曲目，按整首时长计算，含跳过的部分。`}
           delay={80}
         />
         <StatCard
-          label="Artists"
+          label="艺人"
           value={<AnimatedNumber value={props.data.totals.artists} />}
-          detail={`${props.data.totals.tracks.toLocaleString()} different tracks, including features.`}
+          detail={`${props.data.totals.tracks.toLocaleString()} 首不同曲目，含合作曲目。`}
           delay={160}
         />
         <StatCard
-          label="Listening streak"
-          value={`${props.data.streak.current} ${props.data.streak.current === 1 ? "day" : "days"}`}
+          label="连续天数"
+          value={`${props.data.streak.current} ${props.data.streak.current === 1 ? "天" : "天"}`}
           detail={
             props.data.streak.longest > props.data.streak.current
-              ? `Your record is ${props.data.streak.longest} days, ending ${formatDay(props.data.streak.longestEndedOn ?? "")}.`
-              : "Keep it going: a listen a day keeps the record alive."
+              ? `你的最长纪录是 ${props.data.streak.longest} 天，截至 ${formatDay(props.data.streak.longestEndedOn ?? "")}。`
+              : "保持下去：每天听一次，纪录就不会断。"
           }
           delay={240}
         />
@@ -263,25 +263,25 @@ function InsightsContent(props: { data: ListeningInsightsData }) {
       <section class="grid gap-6 border-4 border-[#0a0a0a] p-5 md:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,26rem)]">
         <div>
           <div class="mb-1 flex items-baseline justify-between gap-4">
-            <h3 class="text-xl font-black uppercase tracking-tight">When you listen</h3>
+            <h3 class="text-xl font-black uppercase tracking-tight">收听时段</h3>
             <span class="text-[0.65rem] font-black uppercase tracking-widest text-[#5c5c5c]">
-              Local time
+              本地时间
             </span>
           </div>
           <p class="mb-5 max-w-xl text-xs leading-6 text-[#5c5c5c]">
-            Every hour of the day, stacked. Your peak is{" "}
-            <Show when={peak()} fallback="still loading">
+            一天中每小时的播放次数，逐时堆叠。你的峰值：{" "}
+            <Show when={peak()} fallback="加载中">
               {(value) => (
                 <strong class="text-[#0a0a0a]">
-                  {formatHour(value().hour)} with{" "}
-                  {value().listens.toLocaleString()} listens
+                  {formatHour(value().hour)}，共{" "}
+                  {value().listens.toLocaleString()} 次播放
                 </strong>
               )}
             </Show>
-            .
+            。
           </p>
           <BucketChart
-            label="Listens by local hour of day"
+            label="按本地时间每小时统计的播放次数"
             values={props.data.hours}
             labels={(index) => formatHour(index)}
             highlight={busiestHour()}
@@ -290,18 +290,18 @@ function InsightsContent(props: { data: ListeningInsightsData }) {
         <div class="grid content-start gap-4">
           <div class="border-[3px] border-[#0a0a0a] bg-[#fff7c2] p-4">
             <div class="mb-2 text-[0.65rem] font-black uppercase tracking-[0.25em] text-[#3b3200]">
-              Night owl index
+              夜猫指数
             </div>
             <p class="text-3xl font-black uppercase leading-none tracking-tighter">
               {lateNightShare()}%
             </p>
             <p class="mt-2 text-xs leading-6 text-[#3b3200]">
-              of listens happen after 10pm, when the day is finally yours.
+              的播放发生在晚上 10 点以后，那是终于属于自己的时间。
             </p>
           </div>
           <div class="border-[3px] border-[#0a0a0a] p-4">
             <div class="mb-2 text-[0.65rem] font-black uppercase tracking-[0.25em] text-[#5c5c5c]">
-              Favourite day
+              最常听的一天
             </div>
             <p class="text-3xl font-black uppercase leading-none tracking-tighter">
               {busiestWeekday() === null
@@ -310,7 +310,7 @@ function InsightsContent(props: { data: ListeningInsightsData }) {
             </p>
             <p class="mt-2 text-xs leading-6 text-[#555]">
               {(props.data.weekdays[busiestWeekday() ?? 0] ?? 0).toLocaleString()}{" "}
-              listens on your busiest weekday.
+              次播放，出现在你最活跃的那天。
             </p>
           </div>
         </div>
@@ -319,35 +319,35 @@ function InsightsContent(props: { data: ListeningInsightsData }) {
       <section class="border-4 border-[#0a0a0a] p-5 md:p-8">
         <div class="mb-1 flex flex-wrap items-baseline justify-between gap-4">
           <h3 class="text-xl font-black uppercase tracking-tight">
-            Time vs plays
+            收听时长与播放次数
           </h3>
           <span class="flex items-center gap-4 text-[0.6rem] font-black uppercase tracking-widest text-[#5c5c5c]">
             <span class="flex items-center gap-2">
               <span class="inline-block h-3 w-3 border-[2px] border-[#0a0a0a] bg-[#0a0a0a]" />
-              Plays
+              播放次数
             </span>
             <span class="flex items-center gap-2">
               <span class="inline-block h-[3px] w-5 bg-[#1DB954]" />
-              Hours
+              小时
             </span>
           </span>
         </div>
         <p class="mb-5 max-w-2xl text-xs leading-6 text-[#5c5c5c]">
-          Plays per {trendUnitLabel()} as bars, listening time as the green
-          line. They usually rise and fall together; when they drift apart, your{" "}
-          {trendUnitLabel()}s got shorter or longer tracks. You average{" "}
-          <strong class="text-[#0a0a0a]">{averageTrackTime()}</strong> a track.
+          柱状图表示每{trendUnitLabel()}的播放次数，绿线表示收听时长。两者通常
+          同步升降；一旦分化，说明你每{" "}
+          {trendUnitLabel()}听的曲目变短或变长了。你平均每首曲目{" "}
+          <strong class="text-[#0a0a0a]">{averageTrackTime()}</strong>。
         </p>
         <Show
           when={props.data.trend.length > 0}
           fallback={
             <p class="border-[3px] border-dashed border-[#0a0a0a] p-4 text-xs text-[#555]">
-              No history in this range.
+              该时间范围内没有历史记录。
             </p>
           }
         >
           <TimeVsPlaysChart
-            label={`Plays and listening time by ${props.data.trendUnit}`}
+            label={`按${props.data.trendUnit}统计的播放次数与收听时长`}
             buckets={props.data.trend}
             labels={(index) => {
               const bucket = props.data.trend[index]?.bucket ?? "";
@@ -363,27 +363,27 @@ function InsightsContent(props: { data: ListeningInsightsData }) {
         <div class="border-4 border-[#0a0a0a] p-5 md:p-6">
           <div class="mb-1 flex items-baseline justify-between gap-4">
             <h3 class="text-xl font-black uppercase tracking-tight">
-              Listening over time
-            </h3>
+            收听趋势
+          </h3>
             <span class="text-[0.65rem] font-black uppercase tracking-widest text-[#5c5c5c]">
-              {props.data.trendUnit === "day" ? "Daily" : "Monthly"}
+              {props.data.trendUnit === "day" ? "每日" : "每月"}
             </span>
           </div>
           <p class="mb-5 text-xs leading-6 text-[#5c5c5c]">
             {props.data.trendUnit === "day"
-              ? "Plays per day in this range. Quiet days stay visible so gaps are honest."
-              : "Plays per month in this range. Bars are relative, so a quiet month still reads at a glance."}
+              ? "该范围内每天的播放次数。播放少的日子也照常显示，空白一目了然。"
+              : "该范围内每月的播放次数。柱子按相对高度绘制，清淡的月份也能一眼看出。"}
           </p>
           <Show
             when={props.data.trend.length > 0}
             fallback={
               <p class="border-[3px] border-dashed border-[#0a0a0a] p-4 text-xs text-[#555]">
-                No history in this range.
+                该时间范围内没有历史记录。
               </p>
             }
           >
             <BucketChart
-              label={`Listens by ${props.data.trendUnit}`}
+              label={`按${props.data.trendUnit}统计的播放次数`}
               values={props.data.trend.map((bucket) => bucket.listens)}
               labels={(index) => {
                 const bucket = props.data.trend[index]?.bucket ?? "";
@@ -397,19 +397,19 @@ function InsightsContent(props: { data: ListeningInsightsData }) {
 
         <div class="border-4 border-[#0a0a0a] p-5 md:p-6">
           <div class="mb-1 flex items-baseline justify-between gap-4">
-            <h3 class="text-xl font-black uppercase tracking-tight">On repeat</h3>
+            <h3 class="text-xl font-black uppercase tracking-tight">循环播放</h3>
             <span class="text-[0.65rem] font-black uppercase tracking-widest text-[#5c5c5c]">
-              Top artists
+              常听艺人
             </span>
           </div>
           <p class="mb-5 text-xs leading-6 text-[#5c5c5c]">
-            Your most-played artists, with featured credits included.
+            你播放次数最多的艺人，含合作曲目。
           </p>
           <Show
             when={props.data.topArtists.length > 0}
             fallback={
               <p class="border-[3px] border-dashed border-[#0a0a0a] p-4 text-xs text-[#555]">
-                No artists in this range.
+                该时间范围内没有艺人记录。
               </p>
             }
           >
@@ -422,7 +422,7 @@ function InsightsContent(props: { data: ListeningInsightsData }) {
                       {artist.name}
                     </span>
                     <span class="shrink-0 text-[0.65rem] font-bold uppercase tracking-widest text-[#5c5c5c]">
-                      {artist.listens.toLocaleString()} plays
+                      {artist.listens.toLocaleString()} 次播放
                     </span>
                   </div>
                   <div class="h-3 border-[2px] border-[#0a0a0a]">
@@ -443,21 +443,21 @@ function InsightsContent(props: { data: ListeningInsightsData }) {
 
       <section class="border-4 border-[#0a0a0a] p-5 md:p-6">
         <div class="mb-1 flex items-baseline justify-between gap-4">
-          <h3 class="text-xl font-black uppercase tracking-tight">Most played tracks</h3>
+          <h3 class="text-xl font-black uppercase tracking-tight">播放最多的曲目</h3>
           <span class="text-[0.65rem] font-black uppercase tracking-widest text-[#5c5c5c]">
-            Top 5
+            前 5 名
           </span>
         </div>
         <p class="mb-5 text-xs leading-6 text-[#5c5c5c]">
           {topTrack()
-            ? `${topTrack()?.name} makes up ${repeatShare()}% of plays in this range.`
-            : "No tracks in this range."}
+            ? `${topTrack()?.name} 占该时间范围内播放次数的 ${repeatShare()}%。`
+            : "该时间范围内没有曲目记录。"}
         </p>
         <Show
           when={props.data.topTracks.length > 0}
           fallback={
             <p class="border-[3px] border-dashed border-[#0a0a0a] p-4 text-xs text-[#555]">
-              No tracks in this range.
+              该时间范围内没有曲目记录。
             </p>
           }
         >
@@ -495,7 +495,7 @@ function InsightsContent(props: { data: ListeningInsightsData }) {
                 <div class="shrink-0 text-right">
                   <p class="text-sm font-black">{track.listens.toLocaleString()}</p>
                   <p class="text-[0.6rem] uppercase tracking-widest text-[#5c5c5c]">
-                    plays
+                    次播放
                   </p>
                 </div>
               </a>
@@ -506,42 +506,42 @@ function InsightsContent(props: { data: ListeningInsightsData }) {
 
       <section class="grid gap-4 sm:grid-cols-2">
         <StatCard
-          label="Long tail"
+          label="长尾曲目"
           value={`${discoveryShare()}%`}
-          detail={`${props.data.onePlayTracks.toLocaleString()} tracks you heard exactly once in this range.`}
+          detail={`该时间范围内，有 ${props.data.onePlayTracks.toLocaleString()} 首只听过一次的曲目。`}
           delay={0}
         />
         <StatCard
-          label="Heavy rotation"
+          label="高频循环"
           value={`${repeatShare()}%`}
           detail={
             topTrack()
-              ? `${topTrack()?.name} is your most repeated track in this range.`
-              : "No repeat champion yet."
+              ? `${topTrack()?.name} 是该时间范围内你重复播放最多的曲目。`
+              : "还没有重复播放最多的曲目。"
           }
           delay={60}
         />
         <StatCard
-          label="Top artist"
+          label="常听艺人"
           value={topArtist()?.name ?? "—"}
           detail={
             topArtist()
-              ? `${topArtist()?.listens.toLocaleString()} plays across ${topArtist()?.tracks.toLocaleString()} tracks.`
-              : "Ranking starts after your first sync."
+              ? `${topArtist()?.listens.toLocaleString()} 次播放，覆盖 ${topArtist()?.tracks.toLocaleString()} 首曲目。`
+              : "首次同步后才会生成排名。"
           }
           delay={120}
         />
         <StatCard
-          label="Busiest day"
+          label="最活跃的一天"
           value={
             props.data.busiestDay
-              ? `${props.data.busiestDay.listens.toLocaleString()} plays`
+              ? `${props.data.busiestDay.listens.toLocaleString()} 次播放`
               : "—"
           }
           detail={
             props.data.busiestDay
-              ? `On ${formatDay(props.data.busiestDay.date)}, you could not stop.`
-              : "No standout day yet."
+              ? `${formatDay(props.data.busiestDay.date)} 那天，你根本停不下来。`
+              : "还没有特别突出的一天。"
           }
           delay={180}
         />
@@ -572,11 +572,11 @@ export function ListeningInsights(props: {
           <div class="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p class="mb-1 text-xs font-black uppercase tracking-[0.25em] text-[#3b3200]">
-                Sample data
+                示例数据
               </p>
               <p class="max-w-2xl text-sm leading-6 text-[#3b3200]">
-                This is a preview of the insights you get once listening stats
-                are connected. None of these plays are from your account.
+                这是连接收听统计后你能看到的洞察预览。这些播放记录
+                都不来自你的账号。
               </p>
             </div>
             <button
@@ -584,7 +584,7 @@ export function ListeningInsights(props: {
               onClick={props.onExitPreview}
               class="shrink-0 border-[3px] border-[#0a0a0a] px-3 py-2 text-[0.65rem] font-black uppercase tracking-widest transition hover:bg-[#0a0a0a] hover:text-[#f0ede8]"
             >
-              Exit preview
+              退出预览
             </button>
           </div>
         </div>
@@ -599,15 +599,15 @@ export function ListeningInsights(props: {
           </div>
           <div>
             <div class="mb-2 text-xs uppercase tracking-[0.25em] text-[#5c5c5c]">
-              {props.preview ? "A preview with sample data" : props.rangeLabel}
+              {props.preview ? "示例数据预览" : props.rangeLabel}
             </div>
             <h2
               id="insights-heading"
               class="flex flex-wrap items-center gap-3 text-3xl font-black uppercase leading-none tracking-tighter md:text-5xl"
             >
-              Listening Insights
+              收听洞察
               <span class="border-[3px] border-[#0a0a0a] bg-[#1DB954] px-2 py-1 text-[0.6rem] font-black uppercase tracking-widest">
-                Beta
+                测试版
               </span>
             </h2>
           </div>
@@ -615,19 +615,19 @@ export function ListeningInsights(props: {
         <div class="flex items-center gap-3">
           <Show when={!props.preview}>
             <span class="text-[0.65rem] font-black uppercase tracking-widest text-[#5c5c5c]">
-              Updated {formatDate(props.data.generatedAt)}
+              更新于 {formatDate(props.data.generatedAt)}
             </span>
             <button
               type="button"
               onClick={props.onReload}
               class="whitespace-nowrap border-[3px] border-[#0a0a0a] px-3 py-2 text-[0.65rem] font-black uppercase tracking-widest transition hover:bg-[#0a0a0a] hover:text-[#f0ede8]"
             >
-              Reload
+              重新加载
             </button>
           </Show>
           <Show when={props.preview}>
             <span class="border-[3px] border-[#0a0a0a] bg-[#1DB954] px-3 py-2 text-[0.65rem] font-black uppercase tracking-widest">
-              Preview
+              预览
             </span>
           </Show>
         </div>
@@ -639,7 +639,7 @@ export function ListeningInsights(props: {
 
       <Show when={!props.preview && props.data.totals.listens === 0}>
         <div class="border-[3px] border-dashed border-[#0a0a0a] p-4 text-xs leading-6 text-[#555]">
-          No listens in this range. Try a wider range or another date.
+          该时间范围内没有播放记录。试试扩大范围或换个日期。
         </div>
       </Show>
 

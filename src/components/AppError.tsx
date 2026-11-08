@@ -23,23 +23,23 @@ export function AppError(props: { error?: unknown; reset?: () => void }) {
   return (
     <main class="p-8 md:p-16 max-w-3xl">
       <div class="text-xs uppercase tracking-[0.2em] mb-3 text-[#5c5c5c]">
-        System Error
+        系统错误
       </div>
       <p class="text-sm mb-6 text-[#555]">
-        Try{" "}
+        试试{" "}
         <a class="font-bold hover:underline" href="/login">
-          logging in again
+          重新登录
         </a>{" "}
-        or{" "}
+        或{" "}
         <a
           class="font-bold hover:underline"
           target="_blank"
           rel="noopener"
           href="https://github.com/oscartbeaumont/spotistats/issues/new"
         >
-          report this issue
+          反馈这个问题
         </a>
-        . Include the details below.
+        。请附上以下详情。
       </p>
       <pre class="overflow-auto p-4 text-xs border-4 border-[#0a0a0a] bg-[#0a0a0a] text-[#f0ede8]">
         <samp>{errorText()}</samp>
@@ -50,7 +50,7 @@ export function AppError(props: { error?: unknown; reset?: () => void }) {
           onClick={() => (props.reset ? props.reset() : window.location.reload())}
           class="border-4 border-[#0a0a0a] px-4 py-2 text-xs font-black uppercase tracking-[0.16em] hover:bg-[#0a0a0a] hover:text-[#f0ede8]"
         >
-          Retry
+          重试
         </button>
         <button
           type="button"
@@ -65,7 +65,7 @@ export function AppError(props: { error?: unknown; reset?: () => void }) {
           }}
           class="border-4 border-[#0a0a0a] px-4 py-2 text-xs font-black uppercase tracking-[0.16em] hover:bg-[#0a0a0a] hover:text-[#f0ede8]"
         >
-          {copied() ? "Copied" : "Copy Error"}
+          {copied() ? "已复制" : "复制错误信息"}
         </button>
       </div>
     </main>

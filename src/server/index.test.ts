@@ -99,7 +99,7 @@ it("asks for a reconnect when Spotify expires the stored authorization", async (
   const message = await queue("expired");
   expect(service.requireReauth).toHaveBeenCalledWith(
     "expired",
-    expect.stringContaining("six months"),
+    expect.stringContaining("六个月"),
   );
   expect(service.recordSyncFailure).not.toHaveBeenCalled();
   expect(message.retry).not.toHaveBeenCalled();

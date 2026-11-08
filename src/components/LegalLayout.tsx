@@ -19,17 +19,17 @@ export function LegalLayout(props: {
         </a>
         <nav class="flex items-center gap-5 text-[0.65rem] uppercase tracking-[0.2em] text-[#5c5c5c]">
           <a href="/privacy" class="hover:underline">
-            Privacy
+            隐私
           </a>
           <a href="/security" class="hover:underline">
-            Security
+            安全
           </a>
         </nav>
       </header>
 
       <main class="mx-auto w-full max-w-3xl p-5 py-10 md:p-10">
         <div class="text-[0.65rem] uppercase tracking-[0.25em] text-[#5c5c5c]">
-          Last updated {props.updated}
+          最后更新：{props.updated}
         </div>
         <h1 class="mt-3 text-4xl font-black uppercase leading-none tracking-tighter md:text-5xl">
           {props.title}
@@ -41,9 +41,9 @@ export function LegalLayout(props: {
 
       <footer class="border-t-4 border-[#0a0a0a] p-5 text-[0.65rem] uppercase tracking-[0.2em] text-[#5c5c5c]">
         <div class="mx-auto flex w-full max-w-3xl flex-wrap items-center justify-between gap-3">
-          <span>Created by Oscar Beaumont</span>
+          <span>作者 Oscar Beaumont</span>
           <a href="/" class="hover:underline">
-            Back to Spotistats →
+            返回 Spotistats →
           </a>
         </div>
       </footer>
